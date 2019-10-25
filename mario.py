@@ -2,6 +2,7 @@ import pygame
 from pygame.sprite import Sprite
 
 
+
 class Mario(Sprite):
     def __init__(self, settings, screen):
         super(Mario, self).__init__()
@@ -22,15 +23,17 @@ class Mario(Sprite):
 
     def update(self):
         if self.moving_right and self.rect.right < self.screen_rect.right/2:
-            self.rect.center += self.settings.mario_speed
+            self.rect.x += self.settings.mario_speed
         elif self.moving_right and self.rect.right == self.screen_rect.right/2:
             pass
             # continue his animation
         if self.moving_left and self.rect.left > 0:
-            self.rect.center -= self.settings.mario_speed
+            self.rect.x -= self.settings.mario_speed
         # ill edit this part later
         if self.jump and self.rect.top < self.screen_rect.top:
-            self.rect.center += self.settings.mario_jump_speed
+            self.rect.y += self.settings.mario_jump_speed
+        elif not self.jump:
+            self.rect.y -= self.settings.mario_jump_speed
         self.rect.centerx = self.rect.center
 
     # ill do this when the sprites are ready
