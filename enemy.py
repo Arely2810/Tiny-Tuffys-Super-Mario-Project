@@ -9,8 +9,8 @@ class Enemy(Sprite):
         self.screen_rect = self.screen.get_rect()
         self.count = 0
         self.vel = -3  # negative bc sprite will most likely be moving left
-        self.width = width
-        self.height = height
+        self.width = width  # width of sprite
+        self.height = height  # height of sprite
         self.dead = False
 
         # default image...images can be overwrite in other classes
@@ -90,13 +90,13 @@ class Enemy(Sprite):
                 self.vel *= -1
         self.count += 1
 
-    def swim_cheep(self):  # Sprite movement for cheep cheep
+    def swim_left(self):  # Sprite movement for cheep cheep
         pass
         # some cheep cheep swims straight -> call self.move()
         # write code for wavy swim movement
         # move to cheep cheep class????
 
-    def swim_blooper(self):  # Sprite movement for blooper
+    def swim_up_down(self):  # Sprite movement for blooper
         pass
         # follows Mario
         # swims diagonally up
@@ -124,12 +124,19 @@ class Enemy(Sprite):
 
 # Not sure what I should do with enemy types of different colors yet...inherit from the enemy type class?
 class Goomba(Enemy):
-    """Type 1 Enemy"""
-    def __init__(self, screen, x, y):
+    def __init__(self, screen, x, y, enemy_type):
         super().__init__(screen, x, y, 20, 20)
+        self.enemy_type = enemy_type  # overworld [1], cave [2], castle [3]
 
-        self.images = [pygame.image.load("images/goomba_1.png"), pygame.image.load("images/goomba_2.png"),
-                       pygame.image.load("images/goomba_3.png")]
+        if self.enemy_type == 1:
+            self.images = [pygame.image.load("images/goomba_1.png"), pygame.image.load("images/goomba_2.png"),
+                           pygame.image.load("images/goomba_3.png")]
+        elif self.enemy_type == 2:
+            self.images = [pygame.image.load("images/dark_goomba_1.png"), pygame.image.load("images/dark_goomba_2.png"),
+                           pygame.image.load("images/dark_goomba_3.png")]
+        elif self.enemy_type == 3:
+            self.images = [pygame.image.load("images/gray_goomba_1.png"), pygame.image.load("images/gray_goomba_2.png"),
+                           pygame.image.load("images/gray_goomba_3.png")]
 
     def update(self):
         self.draw()
@@ -138,17 +145,25 @@ class Goomba(Enemy):
 
 
 class KoopaTroopa(Enemy):
-    """Type 2 Enemy"""
-    def __init__(self, screen, x, y, left=0, right=0):
+    def __init__(self, screen, x, y, enemy_type, left=0, right=0):
         super().__init__(screen, x, y, 25, 30)
-
+        self.enemy_type = enemy_type  # green [1], red [2], dark [3]
         # path for red koopa
         self.path_left = left
         self.path_right = right
 
-        self.images = [pygame.image.load("images/green_koopa_1.png"), pygame.image.load("images/green_koopa_2.png"),
-                       pygame.image.load("images/green_koopa_3.png"), pygame.image.load("images/green_koopa_4.png"),
-                       pygame.image.load("images/green_koopa_5.png"), pygame.image.load("images/green_koopa_6.png")]
+        if self.enemy_type == 1:
+            self.images = [pygame.image.load("images/green_koopa_1.png"), pygame.image.load("images/green_koopa_2.png"),
+                           pygame.image.load("images/green_koopa_3.png"), pygame.image.load("images/green_koopa_4.png"),
+                           pygame.image.load("images/green_koopa_5.png"), pygame.image.load("images/green_koopa_6.png")]
+        elif self.enemy_type == 2:
+            self.images = [pygame.image.load("images/red_koopa_1.png"), pygame.image.load("images/red_koopa_2.png"),
+                           pygame.image.load("images/red_koopa_3.png"), pygame.image.load("images/red_koopa_4.png"),
+                           pygame.image.load("images/red_koopa_5.png"), pygame.image.load("images/red_koopa_6.png")]
+        elif self.enemy_type == 3:
+            self.images = [pygame.image.load("images/dark_koopa_1.png"), pygame.image.load("images/dark_koopa_2.png"),
+                           pygame.image.load("images/dark_koopa_3.png"), pygame.image.load("images/dark_koopa_4.png"),
+                           pygame.image.load("images/dark_koopa_5.png"), pygame.image.load("images/dark_koopa_6.png")]
 
     def shell_move(self):
         pass
@@ -170,7 +185,6 @@ class KoopaTroopa(Enemy):
 
 
 class PiranhaPlant(Enemy):
-    """Type 3 Enemy"""
     def __init__(self, screen, x, y):
         super().__init__(screen, x, y, 20, 20)
 
@@ -182,7 +196,6 @@ class PiranhaPlant(Enemy):
 
 
 class KoopaParatroopa(Enemy):
-    """Type 4 Enemy"""
     def __init__(self, screen, x, y):
         super().__init__(screen, x, y, 20, 20)
 
@@ -194,7 +207,6 @@ class KoopaParatroopa(Enemy):
 
 
 class Blooper(Enemy):
-    """Type 5 Enemy"""
     def __init__(self, screen, x, y):
         super().__init__(screen, x, y, 20, 20)
 
@@ -205,7 +217,6 @@ class Blooper(Enemy):
 
 
 class CheepCheep(Enemy):
-    """Type 6 Enemy"""
     def __init__(self, screen, x, y):
         super().__init__(screen, x, y, 20, 20)
 
@@ -217,7 +228,6 @@ class CheepCheep(Enemy):
 
 
 class Podoboo(Enemy):
-    """Type 7 Enemy"""
     def __init__(self, screen, x, y):
         super().__init__(screen, x, y, 20, 20)
 
@@ -230,7 +240,6 @@ class Podoboo(Enemy):
 
 
 class FireBar(Enemy):
-    """Type 8 Enemy"""
     def __init__(self, screen,  x, y):
         super().__init__(screen, x, y, 20, 20)
 
@@ -241,7 +250,6 @@ class FireBar(Enemy):
 
 
 class FakeBowser(Enemy):
-    """Type 9 Enemy"""
     def __init__(self, screen, x, y):
         super().__init__(screen, x, y, 20, 20)
     # dies as goomba 1-4 and koopa 2-4
