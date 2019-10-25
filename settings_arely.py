@@ -16,7 +16,7 @@ class Settings:
 
     def initialize_dynamic_settings(self):
         self.mario_speed = 1.5
-        self.mario_jump_speed = 2
+        self.mario_jump_speed = 1.5
         # deal with enemy later
 
     def dims(self):
