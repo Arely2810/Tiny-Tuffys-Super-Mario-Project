@@ -4,14 +4,17 @@ from pygame.sprite import Sprite
 
 class Enemy(Sprite):
     def __init__(self, screen, x, y, width, height):
-        Sprite.__init__(self)
+        super().__init__()
         self.screen = screen
         self.screen_rect = self.screen.get_rect()
         self.count = 0
+        self.count2 = 0
         self.vel = -3  # negative bc sprite will most likely be moving left
+        self.velY = 2
         self.width = width  # width of sprite
         self.height = height  # height of sprite
         self.dead = False
+        self.moveleft = True
 
         # default image...images can be overwrite in other classes
         self.images = [pygame.image.load('images/goomba_1.png')]
@@ -20,7 +23,23 @@ class Enemy(Sprite):
         self.enemy_rect.x = x
         self.enemy_rect.y = y
 
-    def animation(self):    # animation for enemies with 2 frame movements
+        self.Y = y
+
+    def animation(self):
+        if self.vel < 0:
+            if self.count >= 480:
+                self.count = 0
+            if self.count < 240:
+                self.enemy_image = self.images[0]
+                self.enemy = pygame.transform.scale(self.enemy_image, (self.width, self.height))
+            elif 240 <= self.count <= 480:
+                self.enemy_image = self.images[1]
+                self.enemy = pygame.transform.scale(self.enemy_image, (self.width, self.height))
+        self.count += 1
+
+        return self.enemy, self.enemy_image
+
+    def animation_4(self):    # animation for enemies with 2 frame movements
         if self.vel < 0:
             if self.count >= 480:
                 self.count = 0
@@ -42,10 +61,7 @@ class Enemy(Sprite):
 
         self.count += 1
 
-        return self.enemy, self.enemy_image
-
-    def animation_up_down(self):
-        # going up and falling down
+    def animation_up_down1(self):  # podoboo
         if self.vel < 0:
             self.enemy_image = self.images[0]
             self.enemy = pygame.transform.scale(self.enemy_image, (self.width, self.height))
@@ -53,11 +69,19 @@ class Enemy(Sprite):
             self.enemy_image = self.images[1]
             self.enemy = pygame.transform.scale(self.enemy_image, (self.width, self.height))
 
+    def animation_up_down2(self):  # blooper
+        if self.velY > 0:
+            self.enemy_image = self.images[0]
+            self.enemy = pygame.transform.scale(self.enemy_image, (self.width, self.height))
+        elif self.velY < 0:
+            self.enemy_image = self.images[1]
+            self.enemy = pygame.transform.scale(self.enemy_image, (self.width, self.height - 10))
+
     def dying_animation(self):
         pass
         # Will have different dying animations based how they die..
 
-    def draw(self):
+    def draw(self): # all
         self.screen.blit(self.enemy, self.enemy_rect)
 
     def move(self):  # Only moves left
@@ -80,24 +104,35 @@ class Enemy(Sprite):
             elif self.enemy_rect.x > right:
                 self.vel *= -1
 
-    def move_up_down(self):
+    def move_up_down(self, top, bot):
         # podoboo movement -> up and down
+        # top = highest point it will reach
+        # bot = lowest point it will reach
         if self.count % 80 == 0:
             self.enemy_rect.y += self.vel
-            if self.enemy_rect.y < 350:  # These numbers are temporary, bc not sure how to decide when it should fall
+            if self.enemy_rect.y < bot:  # These numbers are temporary, bc not sure how to decide when it should fall
                 self.vel *= -1
-            if self.enemy_rect.y > 510:  # These numbers are temporary, bc not sure how to decide when it should fall
+            if self.enemy_rect.y > top:  # These numbers are temporary, bc not sure how to decide when it should fall
                 self.vel *= -1
         self.count += 1
 
-    def swim_left(self):  # Sprite movement for cheep cheep
-        pass
-        # some cheep cheep swims straight -> call self.move()
-        # write code for wavy swim movement
-        # move to cheep cheep class????
+    def swim_wavy(self):  # Sprite movement for cheep cheep
+        if self.count % 160 == 0:
+            self.enemy_rect.y += self.velY
+            if abs(self.enemy_rect.y - self.Y) > 16:
+                self.velY *= -1
+        self.move()
 
-    def swim_up_down(self):  # Sprite movement for blooper
-        pass
+    def swim_after_mario(self):  # Sprite movement for blooper
+        if self.count == 480:
+            self.count = 0
+        if self.count % 20 == 0:
+            self.enemy_rect.y -= self.velY
+            if self.count % 60 == 0 and self.velY > 0:
+                self.enemy_rect.x += self.vel
+            if abs(self.Y - self.enemy_rect.y) == 60:
+                self.velY = self.velY * -1
+        self.count += 1
         # follows Mario
         # swims diagonally up
         # drops straight down
@@ -178,7 +213,7 @@ class KoopaTroopa(Enemy):
     def update(self):
         # motion for green koopa
         self.draw()
-        self.animation()
+        self.animation_4()
         self.pickMovement()
         if self.dead:
             self.dying_animation()
@@ -208,35 +243,46 @@ class KoopaParatroopa(Enemy):
 
 class Blooper(Enemy):
     def __init__(self, screen, x, y):
-        super().__init__(screen, x, y, 20, 20)
+        super().__init__(screen, x, y, 20, 30)
 
         self.images = [pygame.image.load("images/blooper_1.png"), pygame.image.load("images/blooper_2.png")]
 
     def update(self):
-        pass
+        self.draw()
+        self.swim_after_mario()
+        self.animation_up_down2()
 
 
 class CheepCheep(Enemy):
-    def __init__(self, screen, x, y):
+    def __init__(self, screen, x, y, move_type):
         super().__init__(screen, x, y, 20, 20)
+        self.move_type = move_type  # straight [1], wavy [2]
 
         self.images = [pygame.image.load("images/red_cheep_cheep_1.png"),
-                       pygame.image.load("images/rec_cheep_cheep_2.png")]
+                       pygame.image.load("images/red_cheep_cheep_2.png")]
+
+    def pickMovement(self):
+        if self.move_type == 1:
+            self.move()
+        if self.move_type == 2:
+            self.swim_wavy()
 
     def update(self):
-        pass
+        self.draw()
+        self.animation()
+        self.pickMovement()
 
 
 class Podoboo(Enemy):
-    def __init__(self, screen, x, y):
+    def __init__(self, screen, x, y, top, bot):
         super().__init__(screen, x, y, 20, 20)
-
+        self.top, self.bot = top, bot
         self.images = [pygame.image.load("images/podoboo_1.png"), pygame.image.load("images/podoboo_2.png")]
 
     def update(self):
         self.draw()
-        self.animation_up_down()
-        self.move_up_down()
+        self.animation_up_down1()
+        self.move_up_down(self.top, self.bot)
 
 
 class FireBar(Enemy):
