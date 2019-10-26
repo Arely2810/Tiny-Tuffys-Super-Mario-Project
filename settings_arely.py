@@ -13,6 +13,24 @@ class Settings:
         self.fireball_height = 5
         self.fireballs_allowed = 3
         # deal with enemy settings later
+        #Sounds
+        one_up = pygame.mixer.Sound('Audio/Sounds/1up.wav')
+        big_jump = pygame.mixer.Sound('Audio/Sounds/BigJump.wav')
+        bump = pygame.mixer.Sound('Audio/Sounds/Bump.wav')
+        destroy_brick = pygame.mixer.Sound('Audio/Sounds/DestroyBrick.wav')
+        fireball = pygame.mixer.Sound('Audio/Sounds/Fireball.wav')
+        fireworks = pygame.mixer.Sound('Audio/Sounds/Fireworks.wav')
+        flagpole = pygame.mixer.Sound('Audio/Sounds/Flagpole.wav')
+        got_coin = pygame.mixer.Sound('Audio/Sounds/GotCoin.wav')
+        grow_vine = pygame.mixer.Sound('Audio/Sounds/GrowVine.wav')
+        kick = pygame.mixer.Sound('Audio/Sounds/Kick.wav')
+        pause = pygame.mixer.Sound('Audio/Sounds/Pause.wav')
+        power_up = pygame.mixer.Sound('Audio/Sounds/PowerUp.wav')
+        small_jump = pygame.mixer.Sound('Audio/Sounds/SmallJump.wav')
+        spawn_power_up = pygame.mixer.Sound('Audio/Sounds/SpawnPowerUp.wav')
+        stomp = pygame.mixer.Sound('Audio/Sounds/Stomp.wav')
+        travel_pipe = pygame.mixer.Sound('Audio/Sounds/TravelPipe.wav')
+        
 
     def initialize_dynamic_settings(self):
         self.mario_speed = 1.5
