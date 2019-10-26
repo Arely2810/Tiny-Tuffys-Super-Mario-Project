@@ -14,30 +14,52 @@ class Enemy(Sprite):
         self.width = width  # width of sprite
         self.height = height  # height of sprite
         self.dead = False
-        self.moveleft = True
 
         # default image...images can be overwrite in other classes
         self.images = [pygame.image.load('images/goomba_1.png')]
-        self.enemy, self.enemy_image = self.animation()
+        self.enemy, self.enemy_image = self.animation2()
         self.enemy_rect = self.enemy.get_rect()
         self.enemy_rect.x = pos[0]  # x
         self.enemy_rect.y = pos[1]  # y
 
         self.Y = pos[1]
 
-    def animation(self):  # goomba, cheep cheep
+    def animation2(self, timer=480):  # constant 2 frame animation forward
         if self.vel < 0:
-            if self.count >= 480:
+            if self.count >= timer:
                 self.count = 0
-            if self.count < 240:
+            if self.count < timer/2:
                 self.enemy_image = self.images[0]
                 self.enemy = pygame.transform.scale(self.enemy_image, (self.width, self.height))
-            elif 240 <= self.count <= 480:
+            elif timer/2 <= self.count <= timer:
                 self.enemy_image = self.images[1]
                 self.enemy = pygame.transform.scale(self.enemy_image, (self.width, self.height))
         self.count += 1
 
         return self.enemy, self.enemy_image
+    # NOTE: need two animation bc when goomba move to the right, there's no image 3 and 4
+
+    def animation4(self, timer=480):    # constant 2 frame animation forward and backward images
+        if self.vel < 0:
+            if self.count >= timer:
+                self.count = 0
+            if self.count < timer/2:
+                self.enemy_image = self.images[0]
+                self.enemy = pygame.transform.scale(self.enemy_image, (self.width, self.height))
+            elif timer/2 <= self.count <= timer:
+                self.enemy_image = self.images[1]
+                self.enemy = pygame.transform.scale(self.enemy_image, (self.width, self.height))
+        elif self.vel > 0:
+            if self.count >= timer:
+                self.count = 0
+            if self.count < timer/2:
+                self.enemy_image = self.images[2]
+                self.enemy = pygame.transform.scale(self.enemy_image, (self.width, self.height))
+            elif timer/2 <= self.count <= timer:
+                self.enemy_image = self.images[3]
+                self.enemy = pygame.transform.scale(self.enemy_image, (self.width, self.height))
+
+        self.count += 1
 
     def dying_animation(self):
         pass
@@ -46,16 +68,14 @@ class Enemy(Sprite):
     def draw(self):  # all
         self.screen.blit(self.enemy, self.enemy_rect)
 
-    def move(self):  # Only moves left
+    def move(self):  # move left
         if self.count % 120 == 0:
             self.enemy_rect.x += self.vel
 
         # Add code for moving opposite direction when colliding with obstacles
         # Or maybe make move right a separate function..
 
-    def move_path_x(self, left, right):  # IS THERE A BETTER WAY TO DO THIS??
-        # red koopa -> stays on path without falling down edge
-        # first moves towards the left
+    def move_path_x(self, left, right):  # koopa, flying koopa
         # left = furthest left x value of path
         # right = furthest right x value of path
 
@@ -66,18 +86,18 @@ class Enemy(Sprite):
             elif self.enemy_rect.x > right:
                 self.vel *= -1
         # doesn't need count bc animation has count
+        
+    def move_path_y(self, top, bot):  # flying koopa
+        # left = furthest left x value of path
+        # right = furthest right x value of path
 
-    def move_path_y(self, top, bot):  # podoboo, piranha plant
-        # podoboo movement -> up and down
-        # top = highest point it will reach
-        # bot = lowest point it will reach
-        if self.count % 80 == 0:
+        if self.count % 120 == 0:
             self.enemy_rect.y += self.vel
             if self.enemy_rect.y < bot:
                 self.vel *= -1
-            if self.enemy_rect.y > top:
+            elif self.enemy_rect.y > top:
                 self.vel *= -1
-        self.count += 1  # needs count bc animation is based on velocity
+        # doesn't need count bc animation has count
 
     def is_grounded(self):
         pass
@@ -115,7 +135,7 @@ class Goomba(Enemy):
 
     def update(self):
         self.draw()
-        self.animation()
+        self.animation2()
         self.move()
 
 
@@ -142,7 +162,7 @@ class KoopaTroopa(Enemy):
 
     def shell_move(self):
         pass
-        # after it dies, animation goes to the shell and can destroy enemies
+        # after it dies, animation goes to the shell and can destroy enemies...how to do this..
 
     def pickMovement(self):
         if (self.path_left and self.path_right) == 0:
@@ -150,59 +170,67 @@ class KoopaTroopa(Enemy):
         else:
             self.move_path_x(self.path_left, self.path_right)
 
-    def animation(self):    # koopa troopa
-        if self.vel < 0:
-            if self.count >= 480:
-                self.count = 0
-            if self.count < 240:
-                self.enemy_image = self.images[0]
-                self.enemy = pygame.transform.scale(self.enemy_image, (self.width, self.height))
-            elif 240 <= self.count <= 480:
-                self.enemy_image = self.images[1]
-                self.enemy = pygame.transform.scale(self.enemy_image, (self.width, self.height))
-        elif self.vel > 0:
-            if self.count >= 480:
-                self.count = 0
-            if self.count < 240:
-                self.enemy_image = self.images[2]
-                self.enemy = pygame.transform.scale(self.enemy_image, (self.width, self.height))
-            elif 240 <= self.count <= 480:
-                self.enemy_image = self.images[3]
-                self.enemy = pygame.transform.scale(self.enemy_image, (self.width, self.height))
-
-        self.count += 1
-
-        return self.enemy, self.enemy_image
-
     def update(self):
         # motion for green koopa
         self.draw()
-        self.animation()
+        self.animation4()
         self.pickMovement()
         if self.dead:
             self.dying_animation()
 
 
 class PiranhaPlant(Enemy):
-    def __init__(self, screen, pos):
-        super().__init__(screen, pos, 20, 20)
+    def __init__(self, screen, pos, enemy_type, top, bot):  # TAKE IN MARIO AS PARAMETER
+        super().__init__(screen, pos, 30, 30)
+        self.top, self.bot = top, bot  # change to path tuple
+        self.enemy_type = enemy_type  # overworld [1], cave [2]
 
-        self.images = [pygame.image.load("images/piranha_plant_1.png"),
-                       pygame.image.load("images/piranha_plant_2.png")]
+        if self.enemy_type == 1:
+            self.images = [pygame.image.load("images/piranha_plant_1.png"),
+                           pygame.image.load("images/piranha_plant_2.png")]
+        elif self.enemy_type == 2:
+            self.images = [pygame.image.load("images/dark_piranha_plant_1.png"),
+                           pygame.image.load("images/dark_piranha_plant_2.png")]
+
+    def move(self):  # HOW DO I MAKE IT STOP AT THE TOP FOR A BIT
+        # top = highest point it will reach
+        # bot = lowest point it will reach
+
+        if self.count % 80 == 0:
+            self.enemy_rect.y += self.velY
+            if self.enemy_rect.y < self.bot:
+                self.velY *= -1
+            if self.enemy_rect.y > self.top:
+                self.velY *= -1
 
     def update(self):
-        pass
+        self.draw()
+        self.animation2()
+        self.move()
+        # HOW DO I MAKE IT NOT MOVE IF mario is adjacent(?) to pipe or on top(?) of the pipe??
 
 
 class KoopaParatroopa(Enemy):
-    def __init__(self, screen, pos):
-        super().__init__(screen, pos, 20, 20)
+    def __init__(self, screen, pos, enemy_type, start, end):
+        super().__init__(screen, pos, 25, 30)
+        self.start, self.end = start, end  # change to path tuple
+        self.enemy_type = enemy_type  # green [1], red [2]
 
-        self.images = [pygame.image.load("images/green_koopa_patroopa_1.png"),
-                       pygame.image.load("images/green_koopa_patroopa_2.png")]
+        if enemy_type == 1:
+            self.images = [pygame.image.load("images/green_koopa_patroopa_1.png"),
+                           pygame.image.load("images/green_koopa_patroopa_2.png"),
+                           pygame.image.load("images/green_koopa_patroopa_3.png"),
+                           pygame.image.load("images/green_koopa_patroopa_4.png")]  # check if we need image 3 and 4
+        elif enemy_type == 2:
+            self.images = [pygame.image.load("images/red_koopa_patroopa_1.png"),
+                           pygame.image.load("images/red_koopa_patroopa_2.png"),
+                           pygame.image.load("images/red_koopa_patroopa_3.png"),
+                           pygame.image.load("images/red_koopa_patroopa_4.png")]
 
     def update(self):
-        pass
+        self.draw()
+        self.animation4()
+        self.move_path_x(self.start, self.end)  # DO THESE MOVE UP AND DOWN. CHECK.
 
 
 class Blooper(Enemy):
@@ -223,7 +251,7 @@ class Blooper(Enemy):
         self.count += 1
         # MAKE IT FOLLOW MARIO
 
-    def animation(self):  # blooper
+    def animation2(self, timer=480):  # blooper
         if self.velY > 0:
             self.enemy_image = self.images[0]
             self.enemy = pygame.transform.scale(self.enemy_image, (self.width, self.height))
@@ -235,7 +263,7 @@ class Blooper(Enemy):
     def update(self):
         self.draw()
         self.swim_after_mario()
-        self.animation()
+        self.animation2()
 
 
 class CheepCheep(Enemy):
@@ -261,17 +289,29 @@ class CheepCheep(Enemy):
 
     def update(self):
         self.draw()
-        self.animation()
+        self.animation2()
         self.pickMovement()
 
 
 class Podoboo(Enemy):
-    def __init__(self, screen, pos, top, bot):
+    def __init__(self, screen, pos, top, bot):  # change to path tuple
         super().__init__(screen, pos, 20, 20)
         self.top, self.bot = top, bot
         self.images = [pygame.image.load("images/podoboo_1.png"), pygame.image.load("images/podoboo_2.png")]
 
-    def animation(self):  # podoboo
+    def move(self):  # podoboo
+        # podoboo movement -> up and down
+        # top = highest point it will reach
+        # bot = lowest point it will reach
+        if self.count % 80 == 0:
+            self.enemy_rect.y += self.vel
+            if self.enemy_rect.y < self.bot:
+                self.vel *= -1
+            if self.enemy_rect.y > self.top:
+                self.vel *= -1
+        self.count += 1  # needs count bc animation is based on velocity
+
+    def animation2(self, timer=480):  # podoboo
         if self.vel < 0:
             self.enemy_image = self.images[0]
             self.enemy = pygame.transform.scale(self.enemy_image, (self.width, self.height))
@@ -282,8 +322,8 @@ class Podoboo(Enemy):
 
     def update(self):
         self.draw()
-        self.animation()
-        self.move_path_y(self.top, self.bot)
+        self.animation2()
+        self.move()
 
 
 class FireBar(Enemy):
@@ -302,6 +342,9 @@ class FakeBowser(Enemy):
     # dies as goomba 1-4 and koopa 2-4
 
         self.images = [pygame.image.load("images/bowser_1.png"), pygame.image.load("images/bowser_2.png")]
+
+    def fire_attack(self):
+        pass
 
     def update(self):
         pass
