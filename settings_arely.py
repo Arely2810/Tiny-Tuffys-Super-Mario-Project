@@ -11,7 +11,7 @@ class Settings:
         self.mario_limit = 3
         self.fireball_width = 5
         self.fireball_height = 5
-        self.fireballs_allowed = 3
+        self.fireballs_allowed = 2
         # deal with enemy settings later
         #Sounds
         one_up = pygame.mixer.Sound('Audio/Sounds/1up.wav')
