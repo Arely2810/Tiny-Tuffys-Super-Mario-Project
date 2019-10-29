@@ -90,31 +90,7 @@ class Mario(Sprite):
 
 
     def update(self):
-        if self.moving_right and self.rect.right < self.screen_rect.right/2:
-            self.rect.x += self.settings.mario_speed
-            # add mario animation
-        elif self.moving_right and self.rect.right == self.screen_rect.right/2:
-            pass
-            # continue his animation
-        if self.moving_left and self.rect.left > 0:
-            self.rect.x -= self.settings.mario_speed
-            # add mario animation
-        # ill edit this part later
-        if self.jump and self.rect.top < self.screen_rect.top and not self.touch_plat:
-            self.rect.y -= self.settings.mario_jump_speed
-            if self.is_facing_right:
-                self.rect.x += self.settings.mario_jump_speed
-            elif self.is_facing_left:
-                self.rect.x -= self.settings.mario_jump_speed
-            # add half of mario jump animation
-        elif not self.jump and not self.touch_ground and not self.touch_plat:
-            self.rect.y += self.settings.mario_jump_speed
-            # add falling half of mario jump animation
-        # ill edit this part later
-        if self.jump and self.rect.top < self.screen_rect.top:
-            self.rect.y += self.settings.mario_jump_speed
-        elif not self.jump:
-            self.rect.y -= self.settings.mario_jump_speed
+
         if self.count >= 30:
             self.count = 0
         if self.death == False:
@@ -588,9 +564,14 @@ class Mario(Sprite):
             elif not self.jump and not self.touch_ground and not self.touch_plat:
                 self.rect.y += self.settings.mario_jump_speed
                 # add falling half of mario jump animation
+        else:
+            self.dead()
+        self.count += 1
         self.rect.centerx = self.rect.center
 
     # ill do this when the sprites are ready
+    def dead(self):
+        pass
     def blitme(self):
         pass
 
