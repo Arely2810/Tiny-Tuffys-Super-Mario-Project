@@ -1,6 +1,6 @@
 import pygame
 import sys
-from fireballs import Fireball
+from fireball import Fireball
 # from settings_arely import Settings
 from mario import Mario
 
