@@ -65,6 +65,7 @@ fire6 = FireBar(DS, (300, 200), 75)
 
 no_pathx_sprites = Group()
 pathx_sprites = Group()
+rotating_sprites = Group()
 
 pathx_sprites.add(redkoopa1)
 
@@ -76,12 +77,14 @@ no_pathx_sprites.add(blooper1)
 no_pathx_sprites.add(cheep1)
 no_pathx_sprites.add(cheep2)
 no_pathx_sprites.add(po1)
-no_pathx_sprites.add(fire1)
-no_pathx_sprites.add(fire2)
-no_pathx_sprites.add(fire3)
-no_pathx_sprites.add(fire4)
-no_pathx_sprites.add(fire5)
-no_pathx_sprites.add(fire6)
+
+rotating_sprites.add(fire1)
+rotating_sprites.add(fire2)
+rotating_sprites.add(fire3)
+rotating_sprites.add(fire4)
+rotating_sprites.add(fire5)
+rotating_sprites.add(fire6)
+
 
 # main loop
 while True:
@@ -134,8 +137,13 @@ while True:
         #     enemyy.path_left -= playerVelocityX
         #     enemyy.path_right -= playerVelocityX
 
+    for enemyy in rotating_sprites:
+        if playerVelocityX > 0 and circlePosX == startScrollingPosX:
+            enemyy.center_rot_x -= playerVelocityX
+
     no_pathx_sprites.update()
     pathx_sprites.update()
+    rotating_sprites.update()
 
     pygame.draw.circle(DS, WHITE, (circlePosX, playerPosY - 10), circleRadius, 0)
     pygame.draw.circle(DS, (0, 0, 255), (playerPosX, playerPosY - 50), circleRadius, 0)
