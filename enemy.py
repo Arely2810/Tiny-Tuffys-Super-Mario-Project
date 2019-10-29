@@ -353,8 +353,8 @@ class FireBar(Enemy):  # NO DYING ANIMATION???
     def __init__(self, screen,  pos, radius):
         super().__init__(screen, pos, 13, 13)
         self.degree = 0
-        self.center_rot_pt_x = pos[0]
-        self.center_rot_pt_y = pos[1]
+        self.center_rot_x = pos[0]
+        self.center_rot_y = pos[1]
         self.angle = radians(5)
         self.radius = radius
         self.omega = 0.1  # angular velocity
@@ -363,7 +363,7 @@ class FireBar(Enemy):  # NO DYING ANIMATION???
 
         self.image = pygame.image.load("images/firebar_1.png")
 
-    def animation4(self, timer=80):
+    def animation(self, timer=80):
         if self.degree <= -360:
             self.degree = 0
         if self.count >= timer:
@@ -380,8 +380,8 @@ class FireBar(Enemy):  # NO DYING ANIMATION???
         if self.angle > radians(360):
             self.angle = 0
         if self.count % 10 == 0:
-            self.x = self.center_rot_pt_x + self.radius * math.cos(self.angle)  # centerX + radius_Xcomp
-            self.y = self.center_rot_pt_y + self.radius * math.sin(self.angle)  # centerY + radius_Ycomp
+            self.x = self.center_rot_x + self.radius * math.cos(self.angle)  # centerX + radius_Xcomp
+            self.y = self.center_rot_y + self.radius * math.sin(self.angle)  # centerY + radius_Ycomp
         self.angle -= radians(0.4)  # rotates counterclockwise
 
     def draw(self):
@@ -389,7 +389,7 @@ class FireBar(Enemy):  # NO DYING ANIMATION???
 
     def update(self):
         self.draw()
-        self.animation4()
+        self.animation()
         self.rotate()
 
 
