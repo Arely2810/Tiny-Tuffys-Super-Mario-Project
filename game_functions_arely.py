@@ -3,6 +3,8 @@ import sys
 from fireball import Fireball
 # from settings_arely import Settings
 from mario import Mario
+from Block import Block
+from tube import Tube
 
 
 
@@ -59,4 +61,38 @@ def check_mario_ground(settings, screen, mario, ground):
 def check_mario_plat(settings, screen, mario, ground):
     pass
 
-# def
+
+#Griffin's code
+def create_block(settings, screen, blocks):
+    while settings.current_block < settings.number_of_blocks[settings.current_level]:
+        block = Block(settings.block_positions[settings.current_level][settings.current_block], screen, settings.block_types[settings.current_level][settings.current_block], settings.block_items[settings.current_level][settings.current_block])
+        settings.current_block += 1
+
+        block.x = block.pos[0]
+        block.y = block.pos[1]
+        blocks.add(block)
+
+def create_item(settings, screen, blocks, items):
+    for b in blocks:
+        if b.item_type == 1:
+            item = Item(1)
+    pass
+def create_tube(settings, screen, tubes):
+    while settings.current_tube < settings.number_of_tubes[settings.current_level]:
+        tube = Tube(settings.tube_positions[settings.current_level][settings.current_tube], screen, settings.tube_sizes[settings.current_level][settings.current_tube])
+        settings.current_tube +=1
+
+        tube.x = tube.pos[0]
+        tube.y = tube.pos[1]
+        tubes.add(tube)
+        
+def create_entities(settings, screen, blocks, tubes, enemies):
+    create_block(settings, screen, blocks)
+    create_tubes(settings, screen, tubes)
+    create_enemies(settings, screen, enemies)
+    pass
+
+def update_screen(settings, screen, stats, scores, mario, blocks, enemies, items, fireball):
+    blocks.draw(screen)
+    tubes.draw(screen)
+    pass
