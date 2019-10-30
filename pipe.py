@@ -7,6 +7,7 @@ large_pipe = pygame.image.load('images/large_pipe.png')
 
 class Pipe(Sprite):
     def __init__(self, pos, screen, size = 0):
+        super(Pipe, self).__init__()
         self.pos = pos
         self.screen = screen
         self.size = size
@@ -14,7 +15,7 @@ class Pipe(Sprite):
 
     def update(self):
         self.rect.x = self.x
-
+        self.rect.y = self.y
 
 
     def set_pipe_size(self):
