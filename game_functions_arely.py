@@ -4,7 +4,7 @@ from fireball import Fireball
 # from settings_arely import Settings
 from mario import Mario
 from Block import Block
-from tube import Tube
+from pipe import Pipe
 
 
 
@@ -78,7 +78,7 @@ def create_item(settings, screen, blocks, items):
             item = Item(1)
     pass
 def create_pipe(settings, screen, pipes):
-    while settings.current_pipe < settings.number_of_tubes[settings.current_level]:
+    while settings.current_pipe < settings.number_of_pipes[settings.current_level]:
         pipe= Pipe(settings.pipe_positions[settings.current_level][settings.current_pipe], screen, settings.pipe_sizes[settings.current_level][settings.current_pipe])
         settings.current_pipe +=1
 
