@@ -9,6 +9,7 @@ class Enemy(Sprite):
         super().__init__()
         self.screen = screen
         self.screen_rect = self.screen.get_rect()
+        self.screen_height = self.screen_rect.height
         self.count = 0
         self.count2 = 0
         self.vel = -1  # negative bc sprite will most likely be moving left
@@ -16,6 +17,7 @@ class Enemy(Sprite):
         self.width = width  # width of sprite
         self.height = height  # height of sprite
         self.dead = False
+        self.is_move = False
 
         # default image...images can be overwrite in other classes...how do i do empty image here???
         self.images = [pygame.image.load('images/goomba_1.png'), pygame.image.load('images/goomba_2.png')]
@@ -107,7 +109,7 @@ class Enemy(Sprite):
     def fall(self):  # if hit by fire ball
         if self.count > 80:
             self.count = 0
-        if self.count % 2 == 0:
+        if self.count % 1 == 0:
             self.enemy_rect.y += self.velY
         self.count += 1
 
@@ -145,10 +147,13 @@ class Goomba(Enemy):
             self.images = [pygame.image.load("images/gray_goomba_1.png"), pygame.image.load("images/gray_goomba_2.png"),
                            pygame.image.load("images/gray_goomba_3.png")]
 
+        self.rect = self.enemy_rect
+
     def update(self):
-        self.draw()
-        self.animation2()
-        self.move()
+        if self.is_move:
+            self.draw()
+            self.animation2()
+            self.move()
         if self.dead:
             self.dying_animation()
             self.fall()
@@ -161,6 +166,7 @@ class KoopaTroopa(Enemy):
         # path for red koopa
         self.path_left = left
         self.path_right = right
+        self.move_shell = False
 
         if self.enemy_type == 1:
             self.images = [pygame.image.load("images/green_koopa_1.png"), pygame.image.load("images/green_koopa_2.png"),
@@ -234,19 +240,19 @@ class KoopaParatroopa(Enemy):
         self.start, self.end = start, end  # change to path tuple
         self.enemy_type = enemy_type  # green [1], red [2]
 
-        if enemy_type == 1:
+        if self.enemy_type == 1:
             self.images = [pygame.image.load("images/green_koopa_patroopa_1.png"),
                            pygame.image.load("images/green_koopa_patroopa_2.png"),
-                           pygame.image.load("images/green_koopa_patroopa_3.png"),
-                           pygame.image.load("images/green_koopa_patroopa_4.png")]  # check if we need image 3 and 4
+                           pygame.image.load("images/green_koopa_7.png")]
         elif enemy_type == 2:
             self.images = [pygame.image.load("images/red_koopa_patroopa_1.png"),
                            pygame.image.load("images/red_koopa_patroopa_2.png"),
-                           pygame.image.load("images/red_koopa_patroopa_3.png"),
-                           pygame.image.load("images/red_koopa_patroopa_4.png")]
+                           pygame.image.load("images/red_koopa_7.png")]
 
     def dying_animation(self):
-        pass
+        self.enemy_image = self.images[2]
+        self.enemy = pygame.transform.scale(self.enemy_image, (self.width, self.height))
+        # check if this works
 
     def update(self):
         self.draw()
@@ -412,6 +418,46 @@ class FakeBowser(Enemy):
 
     def dying_animation(self):
         pass
+
+    def update(self):
+        pass
+
+
+class Fire(Sprite):
+    def __init__(self):
+        super().__init__()
+        self.images = [pygame.image.load("images/fire_atk_1.png"), pygame.image.load("images/fire_atk_2.png"),
+                       pygame.image.load("images/fire_atk_3.png"), pygame.image.load("images/fire_atk_4.png")]
+
+        self.vel = 2
+        self.image = self.images[0]
+        self.rect = self.image.get_rect()
+        self.width = 16
+        self.height = 8
+        self.count = 0
+        self.fire = self.animation()
+
+    def animation(self):
+        if self.vel < 0:
+            if self.count >= 80:
+                self.count = 0
+            if self.count < 40:
+                self.image = self.images[0]
+                self.fire = pygame.transform.scale(self.image, (self.width, self.height))
+            elif 40 <= self.count <= 80:
+                self.image = self.images[1]
+                self.fire = pygame.transform.scale(self.image, (self.width, self.height))
+        elif self.vel > 0:
+            if self.count >= 80:
+                self.count = 0
+            if self.count < 40:
+                self.image = self.images[2]
+                self.fire = pygame.transform.scale(self.image, (self.width, self.height))
+            elif 40 <= self.count <= 80:
+                self.image = self.images[3]
+                self.fire = pygame.transform.scale(self.image, (self.width, self.height))
+        self.count += 1
+        return self.fire
 
     def update(self):
         pass
