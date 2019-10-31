@@ -15,16 +15,16 @@ def mario_move(mario, settings, screen, fireball):
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RIGHT:
                 #mario.is_idle = False
-                # mario.is_facing_right = True
-                # mario.is_facing_left = False
+                mario.is_facing_right = True
+                mario.is_facing_left = False
                 mario.moving_right = True
                 mario.moving_left = False
                 mario.jump = False
                 mario.go_down = False
             elif event.key == pygame.K_LEFT:
                 #mario.is_idle = False
-                # mario.is_facing_left = True
-                # mario.is_facing_right = False
+                mario.is_facing_left = True
+                mario.is_facing_right = False
                 mario.moving_left = True
                 mario.moving_right = False
                 mario.jump = False
@@ -36,6 +36,11 @@ def mario_move(mario, settings, screen, fireball):
                 mario.moving_left = False
                 mario.moving_right = False
                 mario.go_down = False
+                if event.key == pygame.K_RIGHT:
+                    mario.moving_right = True
+                    mario.jump = True
+                    mario.moving_left = False
+                    mario.go_down = False
             if mario.get_big:
                 if event.key == pygame.K_DOWN:
                     # mario.is_idle = False
@@ -60,6 +65,7 @@ def mario_move(mario, settings, screen, fireball):
             elif event.key == pygame.K_SPACE:
                 # mario.is_idle = True
                 mario.jump = False
+                mario.falling = True
             if mario.get_big:
                 if event.key == pygame.K_DOWN:
                     mario.go_down = False
