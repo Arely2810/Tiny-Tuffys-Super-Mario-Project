@@ -5,13 +5,15 @@ from pygame.sprite import Sprite
 
 
 class Enemy(Sprite):
-    def __init__(self, screen, pos, width, height):
+    def __init__(self, screen, pos, width, height, points, group_type):
         super().__init__()
         self.screen = screen
         self.screen_rect = self.screen.get_rect()
         self.screen_height = self.screen_rect.height
+        self.group_type = group_type
+        self.points = points  # FIX ALL POINTS FOR ENEMIES AFTER
+        self.total_score = 0
         self.count = 0
-        self.count2 = 0
         self.vel = -1  # negative bc sprite will most likely be moving left
         self.velY = 2
         self.width = width  # width of sprite
@@ -43,7 +45,7 @@ class Enemy(Sprite):
         self.count += 1
 
         return self.enemy, self.enemy_image
-    # NOTE: need two animation bc when goomba move to the right, there's no image 3 and 4
+    # NOTE: need two animations bc when goomba move to the right, there's no image 3 and 4
 
     def animation4(self, timer=80):    # constant 2 frame animation forward and backward images
         if self.vel < 0:
@@ -68,7 +70,6 @@ class Enemy(Sprite):
         self.count += 1
 
     def dying_animation(self):
-        # if self.dead:
         self.enemy_image = self.images[0]
         self.enemy = pygame.transform.scale(self.enemy_image, (self.width, self.height))
         self.enemy = pygame.transform.rotate(self.enemy, 180)
@@ -108,34 +109,17 @@ class Enemy(Sprite):
         # doesn't need count bc animation has count
 
     def fall(self):  # if hit by fire ball
-        if self.count > 80:
-            self.count = 0
-        if self.count % 1 == 0:
-            self.enemy_rect.y += self.velY
-        self.count += 1
-
-    def is_grounded(self):
-        pass
-        # will not apply for underwater level and koopa paratroopas
-        # Will try to implement when ground sprite is made
-        # Use sprite collision to check
-        # if enemy sprite is not on ground then make it fall down
-
-    def hit_mario(self):
-        pass
-        # checks for side of sprite collision with mario
-
-    def is_dead(self):
-        pass
-        # checks for top of sprite collision with bottom of mario
-        # checks for collision with fire ball
-        # return self.dead
+        # if self.count > 80:
+        #     self.count = 0
+        # if self.count % 1 == 0:
+        self.enemy_rect.y += self.velY
+        # self.count += 1
 
 
 # Not sure what I should do with enemy types of different colors yet...inherit from the enemy type class?
 class Goomba(Enemy):
     def __init__(self, screen, pos, enemy_type):
-        super().__init__(screen, pos, 32, 32)
+        super().__init__(screen, pos, 32, 32, 20, 1)
         self.enemy_type = enemy_type  # overworld [1], cave [2], castle [3]
 
         if self.enemy_type == 1:
@@ -162,7 +146,7 @@ class Goomba(Enemy):
 
 class KoopaTroopa(Enemy):
     def __init__(self, screen, pos, enemy_type, left=0, right=0):
-        super().__init__(screen, pos, 30, 35)
+        super().__init__(screen, pos, 30, 35, 20, enemy_type)
         self.enemy_type = enemy_type  # green [1], red [2], dark [3]
         # path for red koopa
         self.path_left = left
@@ -181,6 +165,8 @@ class KoopaTroopa(Enemy):
             self.images = [pygame.image.load("images/dark_koopa_1.png"), pygame.image.load("images/dark_koopa_2.png"),
                            pygame.image.load("images/dark_koopa_3.png"), pygame.image.load("images/dark_koopa_4.png"),
                            pygame.image.load("images/dark_koopa_5.png"), pygame.image.load("images/dark_koopa_6.png")]
+
+        self.rect = self.enemy_rect
 
     def shell_animation(self):
         if self.vel < 0:
@@ -209,15 +195,17 @@ class KoopaTroopa(Enemy):
     def update(self):
         # motion for green koopa
         self.draw()
-        self.animation4()
-        self.pickMovement()
-        if self.dead:
+        if self.is_move and not self.killed_mario:
+            self.animation4()
+            self.pickMovement()
+        if self.dead and not self.killed_mario:
             self.dying_animation()
+            self.fall()
 
 
 class PiranhaPlant(Enemy):
     def __init__(self, screen, pos, enemy_type, top, bot):  # TAKE IN MARIO AS PARAMETER
-        super().__init__(screen, pos, 32, 32)
+        super().__init__(screen, pos, 32, 32, 20, 1)
         self.top, self.bot = top, bot  # change to path tuple
         self.enemy_type = enemy_type  # overworld [1], cave [2]
 
@@ -228,16 +216,22 @@ class PiranhaPlant(Enemy):
             self.images = [pygame.image.load("images/dark_piranha_plant_1.png"),
                            pygame.image.load("images/dark_piranha_plant_2.png")]
 
+        self.rect = self.enemy_rect
+
     def update(self):
-        self.draw()
-        self.animation2()
-        self.move_path_y(self.top, self.bot)
         # HOW DO I MAKE IT NOT MOVE IF mario is adjacent(?) to pipe or on top(?) of the pipe??
+        self.draw()
+        if self.is_move and not self.killed_mario:
+            self.animation2()
+            self.move_path_y(self.top, self.bot)
+        if self.dead and not self.killed_mario:
+            self.dying_animation()
+            self.fall()
 
 
 class KoopaParatroopa(Enemy):
     def __init__(self, screen, pos, enemy_type, start, end):
-        super().__init__(screen, pos, 25, 30)
+        super().__init__(screen, pos, 25, 30, 20, 1)
         self.start, self.end = start, end  # change to path tuple
         self.enemy_type = enemy_type  # green [1], red [2]
 
@@ -250,6 +244,8 @@ class KoopaParatroopa(Enemy):
                            pygame.image.load("images/red_koopa_patroopa_2.png"),
                            pygame.image.load("images/red_koopa_7.png")]
 
+        self.rect = self.enemy_rect
+
     def dying_animation(self):
         self.enemy_image = self.images[2]
         self.enemy = pygame.transform.scale(self.enemy_image, (self.width, self.height))
@@ -257,15 +253,21 @@ class KoopaParatroopa(Enemy):
 
     def update(self):
         self.draw()
-        self.animation2()
-        self.move_path_y(self.start, self.end)  # DO THESE MOVE UP AND DOWN. CHECK.
+        if self.is_move and not self.killed_mario:
+            self.animation2()
+            self.move_path_y(self.start, self.end)
+        if self.dead and not self.killed_mario:
+            self.dying_animation()
+            self.fall()
 
 
 class Blooper(Enemy):
     def __init__(self, screen, pos):
-        super().__init__(screen, pos, 20, 30)
+        super().__init__(screen, pos, 20, 30, 20, 1)  # group type may change
 
         self.images = [pygame.image.load("images/blooper_1.png"), pygame.image.load("images/blooper_2.png")]
+
+        self.rect = self.enemy_rect
 
     def swim_after_mario(self):
         if self.count == 80:
@@ -290,17 +292,23 @@ class Blooper(Enemy):
 
     def update(self):
         self.draw()
-        self.swim_after_mario()
-        self.animation2()
+        if self.is_move and not self.killed_mario:
+            self.animation2()
+            self.swim_after_mario()
+        if self.dead and not self.killed_mario:
+            self.dying_animation()
+            self.fall()
 
 
 class CheepCheep(Enemy):
     def __init__(self, screen, pos, move_type):
-        super().__init__(screen, pos, 20, 20)
+        super().__init__(screen, pos, 20, 20, 20, 1)
         self.move_type = move_type  # straight [1], wavy [2]
 
         self.images = [pygame.image.load("images/red_cheep_cheep_1.png"),
                        pygame.image.load("images/red_cheep_cheep_2.png")]
+
+        self.rect = self.enemy_rect
 
     def swim_wavy(self):  # cheep cheep
         if self.count % 15 == 0:
@@ -317,15 +325,21 @@ class CheepCheep(Enemy):
 
     def update(self):
         self.draw()
-        self.animation2()
-        self.pickMovement()
+        if self.is_move and not self.killed_mario:
+            self.animation2()
+            self.pickMovement()
+        if self.dead and not self.killed_mario:
+            self.dying_animation()
+            self.fall()
 
 
 class Podoboo(Enemy):  # NO DYING ANIMATION??
     def __init__(self, screen, pos, top, bot):  # change to path tuple
-        super().__init__(screen, pos, 20, 20)
+        super().__init__(screen, pos, 20, 20, 20, 1)
         self.top, self.bot = top, bot
         self.images = [pygame.image.load("images/podoboo_1.png"), pygame.image.load("images/podoboo_2.png")]
+
+        self.rect = self.enemy_rect
 
     def move(self):  # podoboo
         # podoboo movement -> up and down
@@ -352,13 +366,17 @@ class Podoboo(Enemy):  # NO DYING ANIMATION??
 
     def update(self):
         self.draw()
-        self.animation2()
-        self.move()
+        if self.is_move and not self.killed_mario:
+            self.animation2()
+            self.move()
+        if self.dead and not self.killed_mario:
+            self.dying_animation()
+            self.fall()
 
 
 class FireBar(Enemy):  # NO DYING ANIMATION???
     def __init__(self, screen,  pos, radius):
-        super().__init__(screen, pos, 13, 13)
+        super().__init__(screen, pos, 13, 13, 20, 3)
         self.degree = 0
         self.center_rot_x = pos[0]
         self.center_rot_y = pos[1]
@@ -369,6 +387,10 @@ class FireBar(Enemy):  # NO DYING ANIMATION???
         self.y = 0
 
         self.image = pygame.image.load("images/firebar_1.png")
+
+        self.rect = self.enemy_rect  # FIX .-. doesn't work for collision
+        # self.rect.x = self.x
+        # self.rect.y = self.y
 
     def animation(self, timer=80):
         if self.degree <= -360:
@@ -396,18 +418,24 @@ class FireBar(Enemy):  # NO DYING ANIMATION???
 
     def update(self):
         self.draw()
-        self.animation()
-        self.rotate()
+        if self.is_move and not self.killed_mario:
+            self.animation()
+            self.rotate()
+        if self.dead and not self.killed_mario:
+            self.dying_animation()
+            self.fall()
 
 
 class FakeBowser(Enemy):
     def __init__(self, screen, pos, enemy_type):
-        super().__init__(screen, pos, 20, 20)
+        super().__init__(screen, pos, 20, 20, 20, 1)  # group type may change
         # dies as goomba 1-4 and koopa 2-4
         self.enemy_type = enemy_type
 
         self.images = [pygame.image.load("images/bowser_1.png"), pygame.image.load("images/bowser_2.png"),
                        pygame.image.load("images/gray_goomba_4.png"), pygame.image.load("images/green_koopa_7.png")]
+
+        self.rect = self.enemy_rect
 
     def fire_attack(self):
         pass
