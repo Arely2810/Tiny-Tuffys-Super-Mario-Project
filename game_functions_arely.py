@@ -8,31 +8,41 @@ from pipe import Pipe
 
 
 
-def mario_move(event, mario, settings, screen, fireball, ground):
+def mario_move(mario, settings, screen, fireball):
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RIGHT:
-                mario.is_idle = False
+                #mario.is_idle = False
+                # mario.is_facing_right = True
+                # mario.is_facing_left = False
                 mario.moving_right = True
                 mario.moving_left = False
-                mario.is_facing_right = True
-                mario.is_facing_left = False
+                mario.jump = False
+                mario.go_down = False
             elif event.key == pygame.K_LEFT:
-                mario.is_idle = False
+                #mario.is_idle = False
+                # mario.is_facing_left = True
+                # mario.is_facing_right = False
                 mario.moving_left = True
                 mario.moving_right = False
-                mario.is_facing_left = True
-                mario.is_facing_right = False
+                mario.jump = False
+                mario.go_down = False
             elif event.key == pygame.K_SPACE:
-                check_mario_ground(settings, screen, mario, ground)
-                mario.is_idle = False
+               # check_mario_ground(settings, screen, mario, ground)
+               #  mario.is_idle = False
                 mario.jump = True
+                mario.moving_left = False
+                mario.moving_right = False
+                mario.go_down = False
             if mario.get_big:
                 if event.key == pygame.K_DOWN:
-                    mario.is_idle = False
+                    # mario.is_idle = False
                     mario.go_down = True
+                    mario.jump = False
+                    mario.moving_right = False
+                    mario.moving_left = False
             if mario.is_fire:
                 if event.key == pygame.K_LSHIFT or pygame.K_RSHIFT:
                     if len(fireball) < settings.fireballs_allowed:
@@ -42,13 +52,15 @@ def mario_move(event, mario, settings, screen, fireball, ground):
                 sys.exit()
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_RIGHT:
-                mario.is_idle = True
+                # mario.is_idle = True
+                mario.moving_right = False
             elif event.key == pygame.K_LEFT:
-                mario.is_idle = True
+                # mario.is_idle = True
+                mario.moving_left = False
             elif event.key == pygame.K_SPACE:
-                mario.is_idle = True
+                # mario.is_idle = True
                 mario.jump = False
-            if mario.is_big:
+            if mario.get_big:
                 if event.key == pygame.K_DOWN:
                     mario.go_down = False
 
