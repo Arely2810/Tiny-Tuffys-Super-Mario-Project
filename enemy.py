@@ -18,6 +18,7 @@ class Enemy(Sprite):
         self.height = height  # height of sprite
         self.dead = False
         self.is_move = False
+        self.killed_mario = False
 
         # default image...images can be overwrite in other classes...how do i do empty image here???
         self.images = [pygame.image.load('images/goomba_1.png'), pygame.image.load('images/goomba_2.png')]
@@ -150,11 +151,11 @@ class Goomba(Enemy):
         self.rect = self.enemy_rect
 
     def update(self):
-        if self.is_move:
-            self.draw()
+        self.draw()
+        if self.is_move and not self.killed_mario:
             self.animation2()
             self.move()
-        if self.dead:
+        if self.dead and not self.killed_mario:
             self.dying_animation()
             self.fall()
 
