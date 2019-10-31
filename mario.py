@@ -66,6 +66,7 @@ class Mario(Sprite):
         self.moving_right = False
         self.moving_left = False
         self.jump = False
+        self.falling = False
         self.touch_ground = False
         # touching platform
         self.touch_plat = False
@@ -372,25 +373,15 @@ class Mario(Sprite):
                             self.count = 0
             # ill edit this part later
             if self.jump:
-                self.image = self.jump_right()
-                self.velocity = 50
-                if self.count < 30:
-                    self.velocity = self.rect.x
-                    self.velocity -= self.gravity * self.count
-                    print(self.velocity)
-                    self.count += 1
+                self.velocity = -1
                 self.rect.y += self.velocity
-
-                if self.velocity < 0 and self.count == 30:
+                if abs(self.rect.y - 385) >= 150:
                     self.jump = False
-            elif not self.jump and self.count == 30:
-                self.velocity = 0
-                if self.count > 0:
-                    self.velocity = self.rect.x
-                    self.velocity += self.gravity * self.count
-                    self.count -= 1
-                self.rect.y = self.velocity
-
+            if not self.jump and self.falling:
+                self.velocity = 1
+                self.rect.y += self.velocity
+                if self.rect.y > 385:
+                    self.rect.y = 385
                 # self.rect.top -= self.settings.mario_jump_speed
                 # add half of mario jump animation
 
