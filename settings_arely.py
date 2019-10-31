@@ -12,8 +12,11 @@ class Settings:
         self.fireball_width = 5
         self.fireball_height = 5
         self.fireballs_allowed = 2
+        self.fireball_speed = 4
         # deal with enemy settings later
-        #Sounds
+        self.mario_speed = 3
+        self.mario_jump_speed = 5
+        self.level = 1        #Sounds
         self.one_up = pygame.mixer.Sound('Audio/Sounds/1up.wav')
         self.big_jump = pygame.mixer.Sound('Audio/Sounds/BigJump.wav')
         self.bump = pygame.mixer.Sound('Audio/Sounds/Bump.wav')
