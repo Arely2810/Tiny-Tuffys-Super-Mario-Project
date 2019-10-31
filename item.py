@@ -26,8 +26,10 @@ class Coin(Item):
 
 
     def update(self):
+        #movement
         self.rect.x = self.x
         self.rect.y = self.y
+
         if popout_delay < 30:
             self.y -= self.yvel
             self.popout_delay += 1
@@ -36,6 +38,15 @@ class Coin(Item):
         elif self.y == self.pos[1]:
             self.kill()
 
+        #animation
+        if self.count == 60:
+            self.count = 0
+        if self.count < 20:
+            self.image = self.coin_image[0]
+        if (self.count >= 20 and self.count < 30) or (self.count >= 50 and self.count < 60):
+            self.image = self.coin_image[1]
+        if self.count >= 30 and self.count < 50:
+            self.image = self.coin_image[3]
 
 
 
@@ -125,6 +136,18 @@ class FireFlower(Item):
         self.rect.x = self.x
         self.rect.y = self.y
 
+        #animation
+        if self.counter == 60:
+            self.counter = 0
+        if self.count < 15:
+            self.image = self.fire_flower_image[0]
+        if self.count >= 15 and self.count < 30:
+            self.image = self.fire_flower_image[1]
+        if self.count >= 30 and self.count < 45:
+            self.image = self.fire_flower_image[2]
+        if self.count >= 45 and self.count < 60:
+            self.image = self.fire_flower_image[3]
+
 
 class Star(Item):
     star_image = [pygame.image.load('images/star1.png'), pygame.image.load('images/star2.png'),pygame.image.load('images/star3.png'), pygame.image.load('images/star4.png')]
@@ -147,6 +170,19 @@ class Star(Item):
 
         if self.y > 600:
             self.kill()
+
+        #animations
+        if self.count == 60:
+            self.count = 0
+        if self.count < 15:
+            self.image = self.star_image[0]
+        if self.count >= 15 and self.count < 30:
+            self.image = self.star_image[1]
+        if self.count >= 30 and self.count < 45:
+            self.image = self.star_image[2]
+        if self.count >= 45 and self.count < 60:
+            self.image = self.star_image[3]
+
 
     def normal_movement(self):
         self.x += self.vel
