@@ -1,5 +1,6 @@
 import pygame
 from pygame.sprite import Sprite
+import math
 
 
 class Mario(Sprite):
@@ -73,20 +74,18 @@ class Mario(Sprite):
         # self.is_big = False
         self.go_down = False
         self.count = 0
-        self.vel = -1  # negative bc sprite will most likely be moving left
-        self.velY = 2
         self.death = False
-
+        self.jump_count = 10
         # i'll do his image later cuz my sprites don't look the way i want them to
         # self.idle_image = [pygame.load('')]
 
-        self.rect = pygame.Rect(4, 480, 32, 32)
+        self.rect = pygame.Rect(4, 385, 32, 32)
         # pygame.draw.rect(screen, (255, 255, 255), self.rect)
         self.screen_rect = screen.get_rect()
-        self.rect.x = self.rect.width
-        self.rect.y = self.rect.height
-        self.x = float(self.rect.x)
-        self.y = float(self.rect.y)
+        self.rect.x = 4
+        self.rect.y = 385
+        # self.x = float(self.rect.x)
+        # self.y = float(self.rect.y)
         self.center = float(self.rect.centerx)
         # self.ycenter = float(self.rect.centery)
 
@@ -94,6 +93,8 @@ class Mario(Sprite):
         self.big_rect = pygame.Rect(self.rect.x, self.rect.y, 32, 64)
 
         self.image = pygame.transform.scale(self.mario_idle_right[0], (self.rect.width, self.rect.height))
+        self.velocity = 0
+        self.gravity = 1.2
 
     def run_right_animation(self, timer=30):
         if self.get_big:
@@ -121,28 +122,27 @@ class Mario(Sprite):
         return self.image
 
     def run_left_animation(self, timer=30):
-        if self.vel < 0:
-            if self.get_big:
-                if self.count < 10:
-                    self.image = pygame.transform.scale(self.big_mario_run_left[0], (self.rect.width,
-                                                                                     self.rect.height))
-                elif 10 <= self.count < 20:
-                    self.image = pygame.transform.scale(self.big_mario_run_left[1], (self.rect.width,
-                                                                                     self.rect.height))
-                elif 20 <= self.count < 30:
-                    self.image = pygame.transform.scale(self.big_mario_run_left[2], (self.rect.width,
-                                                                                     self.rect.height))
-                elif self.count > 30:
-                    self.count = 0
-            elif not self.get_big:
-                if self.count < 15:
-                    self.image = pygame.transform.scale(self.mario_run_left[0], (self.rect.width,
+        if self.get_big:
+            if self.count < 10:
+                self.image = pygame.transform.scale(self.big_mario_run_left[0], (self.rect.width,
                                                                                  self.rect.height))
-                elif 15 <= self.count < 30:
-                    self.image = pygame.transform.scale(self.mario_run_left[1], (self.rect.width,
+            elif 10 <= self.count < 20:
+                self.image = pygame.transform.scale(self.big_mario_run_left[1], (self.rect.width,
                                                                                  self.rect.height))
-                elif self.count > 30:
-                    self.count = 0
+            elif 20 <= self.count < 30:
+                self.image = pygame.transform.scale(self.big_mario_run_left[2], (self.rect.width,
+                                                                                 self.rect.height))
+            elif self.count > 30:
+                self.count = 0
+        elif not self.get_big:
+            if self.count < 15:
+                self.image = pygame.transform.scale(self.mario_run_left[0], (self.rect.width,
+                                                                             self.rect.height))
+            elif 15 <= self.count < 30:
+                self.image = pygame.transform.scale(self.mario_run_left[1], (self.rect.width,
+                                                                             self.rect.height))
+            elif self.count > 30:
+                self.count = 0
         self.count += 1
         return self.image
 
@@ -165,8 +165,8 @@ class Mario(Sprite):
         return self.image
 
     def update(self):
-        self.rect.x = self.x
-        self.rect.y = self.y
+        # self.rect.x = self.x
+        # self.rect.y = self.y
 
         if self.count >= 30:
             self.count = 0
@@ -194,64 +194,63 @@ class Mario(Sprite):
                 self.center += self.settings.mario_speed
                 # add mario animation
 
-
                 if self.settings.level == 6:
                     self.rect.y += self.settings.mario_speed/2
                     if self.get_big:
                         if self.count == 0:
                             self.image = pygame.transform.scale(self.big_mario_swim_right[0], (self.rect.width,
-                                                                                          self.rect.height))
+                                                                                               self.rect.height))
                             self.screen.blit(self.image, self.rect)
                         elif self.count == 1:
                             self.image = pygame.transform.scale(self.big_mario_swim_right[1], (self.rect.width,
-                                                                                          self.rect.height))
+                                                                                               self.rect.height))
                             self.screen.blit(self.image, self.rect)
                         elif self.count == 2:
                             self.image = pygame.transform.scale(self.big_mario_swim_right[2], (self.rect.width,
-                                                                                          self.rect.height))
+                                                                                               self.rect.height))
                             self.screen.blit(self.image, self.rect)
                         elif self.count == 3:
                             self.image = pygame.transform.scale(self.big_mario_swim_right[3], (self.rect.width,
-                                                                                          self.rect.height))
+                                                                                               self.rect.height))
                             self.screen.blit(self.image, self.rect)
                         elif self.count == 4:
                             self.image = pygame.transform.scale(self.big_mario_swim_right[4], (self.rect.width,
-                                                                                          self.rect.height))
+                                                                                               self.rect.height))
                             self.screen.blit(self.image, self.rect)
                         elif self.count == 5:
                             self.image = pygame.transform.scale(self.big_mario_swim_right[5], (self.rect.width,
-                                                                                          self.rect.height))
+                                                                                               self.rect.height))
                             self.screen.blit(self.image, self.rect)
                         elif self.count == 6:
                             self.image = pygame.transform.scale(self.big_mario_swim_right[6], (self.rect.width,
-                                                                                          self.rect.height))
+                                                                                               self.rect.height))
                             self.screen.blit(self.image, self.rect)
                         if self.count > 6:
                             self.count = 0
                     elif not self.get_big:
                         if self.count == 0:
                             self.image = pygame.transform.scale(self.mario_swim_right[0], (self.rect.width,
-                                                                                          self.rect.height))
+                                                                                           self.rect.height))
                             self.screen.blit(self.image, self.rect)
                         elif self.count == 1:
                             self.image = pygame.transform.scale(self.mario_swim_right[1], (self.rect.width,
-                                                                                          self.rect.height))
+                                                                                           self.rect.height))
                             self.screen.blit(self.image, self.rect)
                         elif self.count == 2:
                             self.image = pygame.transform.scale(self.mario_swim_right[2], (self.rect.width,
-                                                                                          self.rect.height))
+                                                                                           self.rect.height))
                             self.screen.blit(self.image, self.rect)
                         elif self.count == 3:
                             self.image = pygame.transform.scale(self.mario_swim_right[3], (self.rect.width,
-                                                                                          self.rect.height))
+                                                                                           self.rect.height))
                             self.screen.blit(self.image, self.rect)
                         elif self.count == 4:
                             self.image = pygame.transform.scale(self.mario_swim_right[4], (self.rect.width,
-                                                                                          self.rect.height))
+                                                                                           self.rect.height))
                             self.screen.blit(self.image, self.rect)
                         elif self.count == 5:
                             self.image = pygame.transform.scale(self.mario_swim_right[5], (self.rect.width,
-                                                                                          self.rect.height))
+                                                                                           self.rect.height))
                             self.screen.blit(self.image, self.rect)
 
                         if self.count > 5:
@@ -266,25 +265,25 @@ class Mario(Sprite):
                     if self.get_big:
                         if self.count == 0:
                             self.image = pygame.transform.scale(self.big_mario_swim_right[0], (self.rect.width,
-                                                                                          self.rect.height))
+                                                                                               self.rect.height))
                         elif self.count == 1:
                             self.image = pygame.transform.scale(self.big_mario_swim_right[1], (self.rect.width,
-                                                                                          self.rect.height))
+                                                                                               self.rect.height))
                         elif self.count == 2:
                             self.image = pygame.transform.scale(self.big_mario_swim_right[2], (self.rect.width,
-                                                                                          self.rect.height))
+                                                                                               self.rect.height))
                         elif self.count == 3:
                             self.image = pygame.transform.scale(self.big_mario_swim_right[3], (self.rect.width,
-                                                                                          self.rect.height))
+                                                                                               self.rect.height))
                         elif self.count == 4:
                             self.image = pygame.transform.scale(self.big_mario_swim_right[4], (self.rect.width,
-                                                                                          self.rect.height))
+                                                                                               self.rect.height))
                         elif self.count == 5:
                             self.image = pygame.transform.scale(self.big_mario_swim_right[5], (self.rect.width,
-                                                                                          self.rect.height))
+                                                                                               self.rect.height))
                         elif self.count == 6:
                             self.image = pygame.transform.scale(self.big_mario_swim_right[6], (self.rect.width,
-                                                                                          self.rect.height))
+                                                                                               self.rect.height))
                         if self.count > 6:
                             self.count = 0
                     elif not self.get_big:
@@ -319,6 +318,7 @@ class Mario(Sprite):
                                                                                         self.rect.height))
 
             if self.moving_left and self.rect.left > 0:
+                self.image = self.run_left_animation()
                 self.center -= self.settings.mario_speed
                 # add mario animation
 
@@ -328,55 +328,74 @@ class Mario(Sprite):
                     if self.get_big:
                         if self.count == 0:
                             self.image = pygame.transform.scale(self.big_mario_swim_left[0], (self.rect.width,
-                                                                                               self.rect.height))
+                                                                                              self.rect.height))
                         elif self.count == 1:
                             self.image = pygame.transform.scale(self.big_mario_swim_left[1], (self.rect.width,
-                                                                                               self.rect.height))
+                                                                                              self.rect.height))
                         elif self.count == 2:
                             self.image = pygame.transform.scale(self.big_mario_swim_left[2], (self.rect.width,
-                                                                                               self.rect.height))
+                                                                                              self.rect.height))
                         elif self.count == 3:
                             self.image = pygame.transform.scale(self.big_mario_swim_left[3], (self.rect.width,
-                                                                                               self.rect.height))
+                                                                                              self.rect.height))
                         elif self.count == 4:
                             self.image = pygame.transform.scale(self.big_mario_swim_left[4], (self.rect.width,
-                                                                                               self.rect.height))
+                                                                                              self.rect.height))
                         elif self.count == 5:
                             self.image = pygame.transform.scale(self.big_mario_swim_left[5], (self.rect.width,
-                                                                                               self.rect.height))
+                                                                                              self.rect.height))
                         elif self.count == 6:
                             self.image = pygame.transform.scale(self.big_mario_swim_left[6], (self.rect.width,
-                                                                                               self.rect.height))
+                                                                                              self.rect.height))
                         if self.count > 6:
                             self.count = 0
                     elif not self.get_big:
                         if self.count == 0:
                             self.image = pygame.transform.scale(self.mario_swim_left[0], (self.rect.width,
-                                                                                           self.rect.height))
+                                                                                          self.rect.height))
                         elif self.count == 1:
                             self.image = pygame.transform.scale(self.mario_swim_left[1], (self.rect.width,
-                                                                                           self.rect.height))
+                                                                                          self.rect.height))
                         elif self.count == 2:
                             self.image = pygame.transform.scale(self.mario_swim_left[2], (self.rect.width,
-                                                                                           self.rect.height))
+                                                                                          self.rect.height))
                         elif self.count == 3:
                             self.image = pygame.transform.scale(self.mario_swim_left[3], (self.rect.width,
-                                                                                           self.rect.height))
+                                                                                          self.rect.height))
                         elif self.count == 4:
                             self.image = pygame.transform.scale(self.mario_swim_left[4], (self.rect.width,
-                                                                                           self.rect.height))
+                                                                                          self.rect.height))
                         elif self.count == 5:
                             self.image = pygame.transform.scale(self.mario_swim_left[5], (self.rect.width,
-                                                                                           self.rect.height))
+                                                                                          self.rect.height))
                         if self.count > 5:
                             self.count = 0
             # ill edit this part later
-            if self.jump and self.rect.top < self.screen_rect.top and not self.touch_plat:
-                self.rect.top -= self.settings.mario_jump_speed
+            if self.jump:
+                self.image = self.jump_right()
+                self.velocity = 50
+                if self.count < 30:
+                    self.velocity = self.rect.x
+                    self.velocity -= self.gravity * self.count
+                    print(self.velocity)
+                    self.count += 1
+                self.rect.y += self.velocity
+
+                if self.velocity < 0 and self.count == 30:
+                    self.jump = False
+            elif not self.jump and self.count == 30:
+                self.velocity = 0
+                if self.count > 0:
+                    self.velocity = self.rect.x
+                    self.velocity += self.gravity * self.count
+                    self.count -= 1
+                self.rect.y = self.velocity
+
+                # self.rect.top -= self.settings.mario_jump_speed
                 # add half of mario jump animation
 
                 if self.settings.level == 6:
-                    #add swimming animation
+                    # add swimming animation
                     # self.rect.y += self.settings.mario_speed / 2
                     if self.is_facing_right:
                         if self.get_big:
@@ -413,27 +432,27 @@ class Mario(Sprite):
                         elif not self.get_big:
                             if self.count == 0:
                                 self.image = pygame.transform.scale(self.mario_swim_right[0], (self.rect.width,
-                                                                                              self.rect.height))
+                                                                                               self.rect.height))
                                 self.screen.blit(self.image, self.rect)
                             elif self.count == 1:
                                 self.image = pygame.transform.scale(self.mario_swim_right[1], (self.rect.width,
-                                                                                              self.rect.height))
+                                                                                               self.rect.height))
                                 self.screen.blit(self.image, self.rect)
                             elif self.count == 2:
                                 self.image = pygame.transform.scale(self.mario_swim_right[2], (self.rect.width,
-                                                                                              self.rect.height))
+                                                                                               self.rect.height))
                                 self.screen.blit(self.image, self.rect)
                             elif self.count == 3:
                                 self.image = pygame.transform.scale(self.mario_swim_right[3], (self.rect.width,
-                                                                                              self.rect.height))
+                                                                                               self.rect.height))
                                 self.screen.blit(self.image, self.rect)
                             elif self.count == 4:
                                 self.image = pygame.transform.scale(self.mario_swim_right[4], (self.rect.width,
-                                                                                              self.rect.height))
+                                                                                               self.rect.height))
                                 self.screen.blit(self.image, self.rect)
                             elif self.count == 5:
                                 self.image = pygame.transform.scale(self.mario_swim_right[5], (self.rect.width,
-                                                                                              self.rect.height))
+                                                                                               self.rect.height))
                                 self.screen.blit(self.image, self.rect)
 
                             if self.count > 5:
@@ -442,58 +461,58 @@ class Mario(Sprite):
                         if self.get_big:
                             if self.count == 0:
                                 self.image = pygame.transform.scale(self.big_mario_swim_left[0], (self.rect.width,
-                                                                                                   self.rect.height))
+                                                                                                  self.rect.height))
                                 self.screen.blit(self.image, self.rect)
                             elif self.count == 1:
                                 self.image = pygame.transform.scale(self.big_mario_swim_left[1], (self.rect.width,
-                                                                                                   self.rect.height))
+                                                                                                  self.rect.height))
                                 self.screen.blit(self.image, self.rect)
                             elif self.count == 2:
                                 self.image = pygame.transform.scale(self.big_mario_swim_left[2], (self.rect.width,
-                                                                                                   self.rect.height))
+                                                                                                  self.rect.height))
                                 self.screen.blit(self.image, self.rect)
                             elif self.count == 3:
                                 self.image = pygame.transform.scale(self.big_mario_swim_left[3], (self.rect.width,
-                                                                                                   self.rect.height))
+                                                                                                  self.rect.height))
                                 self.screen.blit(self.image, self.rect)
                             elif self.count == 4:
                                 self.image = pygame.transform.scale(self.big_mario_swim_left[4], (self.rect.width,
-                                                                                                   self.rect.height))
+                                                                                                  self.rect.height))
                                 self.screen.blit(self.image, self.rect)
                             elif self.count == 5:
                                 self.image = pygame.transform.scale(self.big_mario_swim_left[5], (self.rect.width,
-                                                                                                   self.rect.height))
+                                                                                                  self.rect.height))
                                 self.screen.blit(self.image, self.rect)
                             elif self.count == 6:
                                 self.image = pygame.transform.scale(self.big_mario_swim_left[6], (self.rect.width,
-                                                                                                   self.rect.height))
+                                                                                                  self.rect.height))
                                 self.screen.blit(self.image, self.rect)
                             if self.count > 6:
                                 self.count = 0
                         elif not self.get_big:
                             if self.count == 0:
                                 self.image = pygame.transform.scale(self.mario_swim_left[0], (self.rect.width,
-                                                                                               self.rect.height))
+                                                                                              self.rect.height))
                                 self.screen.blit(self.image, self.rect)
                             elif self.count == 1:
                                 self.image = pygame.transform.scale(self.mario_swim_left[1], (self.rect.width,
-                                                                                               self.rect.height))
+                                                                                              self.rect.height))
                                 self.screen.blit(self.image, self.rect)
                             elif self.count == 2:
                                 self.image = pygame.transform.scale(self.mario_swim_left[2], (self.rect.width,
-                                                                                               self.rect.height))
+                                                                                              self.rect.height))
                                 self.screen.blit(self.image, self.rect)
                             elif self.count == 3:
                                 self.image = pygame.transform.scale(self.mario_swim_left[3], (self.rect.width,
-                                                                                               self.rect.height))
+                                                                                              self.rect.height))
                                 self.screen.blit(self.image, self.rect)
                             elif self.count == 4:
                                 self.image = pygame.transform.scale(self.mario_swim_left[4], (self.rect.width,
-                                                                                               self.rect.height))
+                                                                                              self.rect.height))
                                 self.screen.blit(self.image, self.rect)
                             elif self.count == 5:
                                 self.image = pygame.transform.scale(self.mario_swim_left[5], (self.rect.width,
-                                                                                               self.rect.height))
+                                                                                              self.rect.height))
                                 self.screen.blit(self.image, self.rect)
 
                             if self.count > 5:
@@ -514,7 +533,7 @@ class Mario(Sprite):
         # self.blitme()
         self.rect.centerx = self.center
         # THIS BLIT WORKS FOR MOVEMENT BUT NOT ANIMATION
-        # self.blitme()
+        self.blitme()
 
         # self.rect.centery = self.ycenter
 
