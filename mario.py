@@ -80,7 +80,7 @@ class Mario(Sprite):
         # i'll do his image later cuz my sprites don't look the way i want them to
         # self.idle_image = [pygame.load('')]
 
-        self.rect = pygame.Rect(4, 385, 32, 32)
+        self.rect = pygame.Rect(4, 385, 30, 30)
         # pygame.draw.rect(screen, (255, 255, 255), self.rect)
         self.screen_rect = screen.get_rect()
         self.rect.x = 4
@@ -91,7 +91,7 @@ class Mario(Sprite):
         # self.ycenter = float(self.rect.centery)
 
         # r, sr = self.rect, self.screen_rect
-        self.big_rect = pygame.Rect(self.rect.x, self.rect.y, 32, 64)
+        self.big_rect = pygame.Rect(self.rect.x, self.rect.y, 30, 60)
 
         self.image = pygame.transform.scale(self.mario_idle_right[0], (self.rect.width, self.rect.height))
         self.velocity = 0
@@ -165,6 +165,16 @@ class Mario(Sprite):
                                                                           self.rect.height))
         return self.image
 
+    # def crouch_right(self):
+    #     self.image = pygame.transform.scale(self.big_mario_crouch_right[0], (self.rect.width,
+    #                                                                          self.rect.height))
+    #     return self.image
+    #
+    # def crouch_left(self):
+    #     self.image = pygame.transform.scale(self.big_mario_crouch_left[0], (self.rect.width,
+    #                                                                         self.rect.height))
+    #     return self.image
+
     def update(self):
         # self.rect.x = self.x
         # self.rect.y = self.y
@@ -174,9 +184,11 @@ class Mario(Sprite):
 
         if not self.death:
 
-            if self.is_facing_right and self.is_idle and not self.moving_right:
+            if self.is_facing_right and not self.moving_right and not self.moving_left and not self.jump and not \
+                    self.falling:
                 self.image = pygame.transform.scale(self.mario_idle_right[0], (self.rect.width, self.rect.height))
-            elif self.is_facing_left and self.is_idle and not self.moving_left:
+            elif self.is_facing_left and not self.moving_right and not self.moving_left and not self.jump and not \
+                    self.falling:
                 self.image = pygame.transform.scale(self.mario_idle_left[0], (self.rect.width, self.rect.height))
 
             if self.get_big:
@@ -373,15 +385,24 @@ class Mario(Sprite):
                             self.count = 0
             # ill edit this part later
             if self.jump:
+                if self.is_facing_right:
+                    self.image = self.jump_right()
+                elif self.is_facing_left:
+                    self.image = self.jump_left()
                 self.velocity = -1
                 self.rect.y += self.velocity
                 if abs(self.rect.y - 385) >= 150:
                     self.jump = False
             if not self.jump and self.falling:
+                if self.is_facing_right:
+                    self.image = self.jump_right()
+                elif self.is_facing_left:
+                    self.image = self.jump_left()
                 self.velocity = 1
-                self.rect.y += self.velocity
+                self.rect.y += self.velocity * self.settings.mario_jump_speed
                 if self.rect.y > 385:
                     self.rect.y = 385
+                    self.falling = False
                 # self.rect.top -= self.settings.mario_jump_speed
                 # add half of mario jump animation
 
@@ -508,6 +529,13 @@ class Mario(Sprite):
 
                             if self.count > 5:
                                 self.count = 0
+            if self.jump and self.moving_right:
+                self.image = self.jump_right()
+                self.velocity = -1
+                self.rect.y += self.velocity
+                self.center += self.velocity
+                if abs(self.rect.y - 385) >= 150:
+                    self.jump = False
                 # if self.is_facing_right:
                 #     self.rect.x += self.settings.mario_jump_speed
                 # elif self.is_facing_left:
