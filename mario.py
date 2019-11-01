@@ -13,6 +13,7 @@ class Mario(Sprite):
                         pygame.image.load('Cut-Sprites-For-Mario/Mario/78.png'),
                         pygame.image.load('Cut-Sprites-For-Mario/Mario/80.png'),
                         pygame.image.load('Cut-Sprites-For-Mario/Mario/83.png')]
+
     mario_idle_left = [pygame.image.load('Cut-Sprites-For-Mario/Mario/73.png')]
     mario_run_left = [pygame.image.load('Cut-Sprites-For-Mario/Mario/69.png'),
                       pygame.image.load('Cut-Sprites-For-Mario/Mario/68.png')]
@@ -22,6 +23,7 @@ class Mario(Sprite):
                        pygame.image.load('Cut-Sprites-For-Mario/Mario/71.png'),
                        pygame.image.load('Cut-Sprites-For-Mario/Mario/72.png'),
                        pygame.image.load('Cut-Sprites-For-Mario/Mario/74.png')]
+
     big_mario_idle_right = [pygame.image.load('Cut-Sprites-For-Mario/Mario/54.png')]
     big_mario_run_right = [pygame.image.load('Cut-Sprites-For-Mario/Mario/51.png'),
                            pygame.image.load('Cut-Sprites-For-Mario/Mario/52.png'),
@@ -34,6 +36,7 @@ class Mario(Sprite):
                             pygame.image.load('Cut-Sprites-For-Mario/Mario/44.png'),
                             pygame.image.load('Cut-Sprites-For-Mario/Mario/45.png')]
     big_mario_crouch_right = [pygame.image.load('Cut-Sprites-For-Mario/Mario/48.png')]
+
     big_mario_idle_left = [pygame.image.load('Cut-Sprites-For-Mario/Mario/55.png')]
     big_mario_run_left = [pygame.image.load('Cut-Sprites-For-Mario/Mario/58.png'),
                           pygame.image.load('Cut-Sprites-For-Mario/Mario/57.png'),
@@ -46,6 +49,37 @@ class Mario(Sprite):
                            pygame.image.load('Cut-Sprites-For-Mario/Mario/38.png'),
                            pygame.image.load('Cut-Sprites-For-Mario/Mario/39.png')]
     big_mario_crouch_left = [pygame.image.load('Cut-Sprites-For-Mario/Mario/61.png')]
+
+    fire_idle_right = [pygame.image.load('Cut-Sprites-For-Mario/Mario/23.png')]
+    fire_run_right = [pygame.image.load('Cut-Sprites-For-Mario/Mario/19.png'),
+                      pygame.image.load('Cut-Sprites-For-Mario/Mario/20.png'),
+                      pygame.image.load('Cut-Sprites-For-Mario/Mario/21.png'),
+                      pygame.image.load('Cut-Sprites-For-Mario/Mario/22.png')]
+    fire_jump_right = [pygame.image.load('Cut-Sprites-For-Mario/Mario/17.png')]
+    fire_swim_right = [pygame.image.load('Cut-Sprites-For-Mario/Mario/11.png'),
+                       pygame.image.load('Cut-Sprites-For-Mario/Mario/12.png'),
+                       pygame.image.load('Cut-Sprites-For-Mario/Mario/13.png'),
+                       pygame.image.load('Cut-Sprites-For-Mario/Mario/14.png'),
+                       pygame.image.load('Cut-Sprites-For-Mario/Mario/15.png')]
+    fire_crouch_right = [pygame.image.load('Cut-Sprites-For-Mario/Mario/16.png')]
+    fire_throw_right = [pygame.image.load('Cut-Sprites-For-Mario/Mario/20.png')]
+
+    fire_idle_left = [pygame.image.load('Cut-Sprites-For-Mario/Mario/24.png')]
+    fire_run_left = [pygame.image.load('Cut-Sprites-For-Mario/Mario/28.png'),
+                     pygame.image.load('Cut-Sprites-For-Mario/Mario/27.png'),
+                     pygame.image.load('Cut-Sprites-For-Mario/Mario/26.png'),
+                     pygame.image.load('Cut-Sprites-For-Mario/Mario/25.png')]
+    fire_jump_left = [pygame.image.load('Cut-Sprites-For-Mario/Mario/30.png')]
+    fire_swim_left = [pygame.image.load('Cut-Sprites-For-Mario/Mario/10.png'),
+                      pygame.image.load('Cut-Sprites-For-Mario/Mario/9.png'),
+                      pygame.image.load('Cut-Sprites-For-Mario/Mario/8.png'),
+                      pygame.image.load('Cut-Sprites-For-Mario/Mario/7.png'),
+                      pygame.image.load('Cut-Sprites-For-Mario/Mario/6.png'),
+                      pygame.image.load('Cut-Sprites-For-Mario/Mario/5.png')]
+    fire_crouch_left = [pygame.image.load('Cut-Sprites-For-Mario/Mario/31.png')]
+    fire_throw_left = [pygame.image.load('Cut-Sprites-For-Mario/Mario/27.png')]
+
+    mario_death = [pygame.image.load('Cut-Sprites-For-Mario/Mario/62.png')]
 
     def __init__(self, settings, screen):
         super(Mario, self).__init__()
@@ -72,6 +106,7 @@ class Mario(Sprite):
         self.touch_plat = False
         self.get_big = False
         self.is_fire = False
+        self.throw_fire = False
         # self.is_big = False
         self.go_down = False
         self.count = 0
@@ -97,72 +132,134 @@ class Mario(Sprite):
         self.velocity = 0
         self.gravity = 1.2
 
+    def fire_run_right_animation(self, timer=30):
+        if self.count < 7:
+            self.image = pygame.transform.scale(self.fire_run_right[0], (self.rect.width,
+                                                                              self.rect.height))
+        elif 7 <= self.count < 15:
+            self.image = pygame.transform.scale(self.fire_run_right[1], (self.rect.width,
+                                                                              self.rect.height))
+        elif 15 <= self.count < 22:
+            self.image = pygame.transform.scale(self.fire_run_right[2], (self.rect.width,
+                                                                              self.rect.height))
+        elif 22 <= self.count < 30:
+            self.image = pygame.transform.scale(self.fire_run_right[3], (self.rect.width,
+                                                                              self.rect.height))
+        elif self.count > 30:
+            self.count = 0
+        self.count += 1
+        return self.image
+
+    def big_run_right_animation(self, timer=30):
+        if self.count < 30:
+            self.image = pygame.transform.scale(self.big_mario_run_right[0], (self.rect.width,
+                                                                              self.rect.height))
+        elif 10 <= self.count < 20:
+            self.image = pygame.transform.scale(self.big_mario_run_right[1], (self.rect.width,
+                                                                              self.rect.height))
+        elif 20 <= self.count < 30:
+            self.image = pygame.transform.scale(self.big_mario_run_right[2], (self.rect.width,
+                                                                              self.rect.height))
+        elif self.count > 30:
+            self.count = 0
+        self.count += 1
+        return self.image
+
     def run_right_animation(self, timer=30):
-        if self.get_big:
-            if self.count < 30:
-                self.image = pygame.transform.scale(self.big_mario_run_right[0], (self.rect.width,
-                                                                                  self.rect.height))
-            elif 10 <= self.count < 20:
-                self.image = pygame.transform.scale(self.big_mario_run_right[1], (self.rect.width,
-                                                                                  self.rect.height))
-            elif 20 <= self.count < 30:
-                self.image = pygame.transform.scale(self.big_mario_run_right[2], (self.rect.width,
-                                                                                  self.rect.height))
-            elif self.count > 30:
-                self.count = 0
-        elif not self.get_big:
-            if self.count < 15:
-                self.image = pygame.transform.scale(self.mario_run_right[0], (self.rect.width,
-                                                                              self.rect.height))
-            elif 15 <= self.count < 30:
-                self.image = pygame.transform.scale(self.mario_run_right[1], (self.rect.width,
-                                                                              self.rect.height))
-            elif self.count > 30:
-                self.count = 0
+        if self.count < 15:
+            self.image = pygame.transform.scale(self.mario_run_right[0], (self.rect.width,
+                                                                          self.rect.height))
+        elif 15 <= self.count < 30:
+            self.image = pygame.transform.scale(self.mario_run_right[1], (self.rect.width,
+                                                                          self.rect.height))
+        elif self.count > 30:
+            self.count = 0
+        self.count += 1
+        return self.image
+
+    def fire_run_left_animation(self, timer=30):
+        if self.count < 7:
+            self.image = pygame.transform.scale(self.fire_run_left[0], (self.rect.width,
+                                                                         self.rect.height))
+        elif 7 <= self.count < 15:
+            self.image = pygame.transform.scale(self.fire_run_left[1], (self.rect.width,
+                                                                         self.rect.height))
+        elif 15 <= self.count < 22:
+            self.image = pygame.transform.scale(self.fire_run_left[2], (self.rect.width,
+                                                                         self.rect.height))
+        elif 22 <= self.count < 30:
+            self.image = pygame.transform.scale(self.fire_run_left[3], (self.rect.width,
+                                                                         self.rect.height))
+        elif self.count > 30:
+            self.count = 0
+        self.count += 1
+        return self.image
+
+    def big_run_left_animation(self, timer=30):
+        if self.count < 10:
+            self.image = pygame.transform.scale(self.big_mario_run_left[0], (self.rect.width,
+                                                                             self.rect.height))
+        elif 10 <= self.count < 20:
+            self.image = pygame.transform.scale(self.big_mario_run_left[1], (self.rect.width,
+                                                                             self.rect.height))
+        elif 20 <= self.count < 30:
+            self.image = pygame.transform.scale(self.big_mario_run_left[2], (self.rect.width,
+                                                                             self.rect.height))
+        elif self.count > 30:
+            self.count = 0
         self.count += 1
         return self.image
 
     def run_left_animation(self, timer=30):
-        if self.get_big:
-            if self.count < 10:
-                self.image = pygame.transform.scale(self.big_mario_run_left[0], (self.rect.width,
-                                                                                 self.rect.height))
-            elif 10 <= self.count < 20:
-                self.image = pygame.transform.scale(self.big_mario_run_left[1], (self.rect.width,
-                                                                                 self.rect.height))
-            elif 20 <= self.count < 30:
-                self.image = pygame.transform.scale(self.big_mario_run_left[2], (self.rect.width,
-                                                                                 self.rect.height))
-            elif self.count > 30:
-                self.count = 0
-        elif not self.get_big:
-            if self.count < 15:
-                self.image = pygame.transform.scale(self.mario_run_left[0], (self.rect.width,
-                                                                             self.rect.height))
-            elif 15 <= self.count < 30:
-                self.image = pygame.transform.scale(self.mario_run_left[1], (self.rect.width,
-                                                                             self.rect.height))
-            elif self.count > 30:
-                self.count = 0
+        if self.count < 15:
+            self.image = pygame.transform.scale(self.mario_run_left[0], (self.rect.width,
+                                                                         self.rect.height))
+        elif 15 <= self.count < 30:
+            self.image = pygame.transform.scale(self.mario_run_left[1], (self.rect.width,
+                                                                         self.rect.height))
+        elif self.count > 30:
+            self.count = 0
         self.count += 1
         return self.image
 
-    def jump_right(self):
-        if self.get_big:
-            self.image = pygame.transform.scale(self.big_mario_jump_right[0], (self.rect.width,
-                                                                               self.rect.height))
-        elif not self.get_big:
-            self.image = pygame.transform.scale(self.mario_jump_right[0], (self.rect.width,
+    def fire_jump_right_animation(self):
+        self.image = pygame.transform.scale(self.fire_jump_right[0], (self.rect.width,
                                                                            self.rect.height))
         return self.image
 
-    def jump_left(self):
-        if self.get_big:
-            self.image = pygame.transform.scale(self.big_mario_jump_left[0], (self.rect.width,
-                                                                              self.rect.height))
-        elif not self.get_big:
-            self.image = pygame.transform.scale(self.mario_jump_left[0], (self.rect.width,
+    def big_jump_right_animation(self):
+        self.image = pygame.transform.scale(self.big_mario_jump_right[0], (self.rect.width,
+                                                                           self.rect.height))
+        return self.image
+
+    def jump_right_animation(self):
+        self.image = pygame.transform.scale(self.mario_jump_right[0], (self.rect.width,
+                                                                           self.rect.height))
+        return self.image
+
+    def fire_jump_left_animation(self):
+        self.image = pygame.transform.scale(self.fire_jump_left[0], (self.rect.width,
                                                                           self.rect.height))
+        return self.image
+
+    def big_jump_left_animation(self):
+        self.image = pygame.transform.scale(self.big_mario_jump_left[0], (self.rect.width,
+                                                                          self.rect.height))
+        return self.image
+
+    def jump_left_animation(self):
+        self.image = pygame.transform.scale(self.mario_jump_left[0], (self.rect.width,
+                                                                          self.rect.height))
+        return self.image
+
+    def shooting_fireballs_right(self):
+        self.image = pygame.transform.scale(self.fire_throw_right[0], (self.rect.width,
+                                                                      self.rect.height))
+        return self.image
+
+    def shooting_fireballs_left(self):
+        self.image = pygame.transform.scale(self.fire_throw_left[0], (self.rect.width,
+                                                                      self.rect.height))
         return self.image
 
     # def crouch_right(self):
@@ -191,23 +288,40 @@ class Mario(Sprite):
                     self.falling:
                 self.image = pygame.transform.scale(self.mario_idle_left[0], (self.rect.width, self.rect.height))
 
-            if self.get_big:
+            if self.get_big and not self.is_fire:
                 self.rect.width, self.rect.height = self.big_rect.width, self.big_rect.height
-                if self.is_facing_right and self.is_idle and not self.moving_right:
+                if self.is_facing_right and not self.moving_left and not self.moving_right and not self.jump and not \
+                        self.falling:
                     self.image = pygame.transform.scale(self.big_mario_idle_right[0],
                                                         (self.rect.width, self.rect.height))
-                elif self.is_facing_left and self.is_idle and not self.moving_left:
+                elif self.is_facing_left and not self.moving_left and not self.moving_right and not self.jump and not \
+                        self.falling:
                     self.image = pygame.transform.scale(self.big_mario_idle_left[0],
+                                                        (self.rect.width, self.rect.height))
+            elif self.get_big and self.is_fire:
+                self.rect.width, self.rect.height = self.big_rect.width, self.big_rect.height
+                if self.is_facing_right and not self.moving_left and not self.moving_right and not self.jump and not \
+                        self.falling:
+                    self.image = pygame.transform.scale(self.fire_idle_right[0],
+                                                        (self.rect.width, self.rect.height))
+                elif self.is_facing_left and not self.moving_left and not self.moving_right and not self.jump and not \
+                        self.falling:
+                    self.image = pygame.transform.scale(self.fire_idle_left[0],
                                                         (self.rect.width, self.rect.height))
             elif not self.get_big:
                 self.rect.width, self.rect.height = self.rect.width, self.rect.height
 
             if self.moving_right and self.rect.right < self.screen_rect.right/2:
-                self.image = self.run_right_animation()
+                if self.get_big and not self.is_fire:
+                    self.image = self.big_run_right_animation()
+                elif self.get_big and self.is_fire:
+                    self.image = self.fire_run_right_animation()
+                elif not self.get_big and not self.is_fire:
+                    self.image = self.run_right_animation()
                 self.center += self.settings.mario_speed
                 # add mario animation
 
-                if self.settings.level == 6:
+                if self.settings.current_level == 6:
                     self.rect.y += self.settings.mario_speed/2
                     if self.get_big:
                         if self.count == 0:
@@ -270,9 +384,14 @@ class Mario(Sprite):
                             self.count = 0
 
             elif self.moving_right and self.rect.right == self.screen_rect.right/2:
-
+                if self.get_big and not self.is_fire:
+                    self.image = self.big_run_right_animation()
+                elif self.get_big and self.is_fire:
+                    self.image = self.fire_run_right_animation()
+                elif not self.get_big and not self.is_fire:
+                    self.image = self.run_right_animation()
                 # continue his animation
-                if self.settings.level == 6:
+                if self.settings.current_level == 6:
                     self.rect.y += self.settings.mario_speed/2
                     #add swimming animation
                     if self.get_big:
@@ -330,12 +449,25 @@ class Mario(Sprite):
                     self.image = pygame.transform.scale(self.big_mario_crouch_left[0], (self.rect.width,
                                                                                         self.rect.height))
 
+            if self.get_big and self.is_fire and self.go_down:
+                if self.is_facing_right:
+                    self.image = pygame.transform.scale(self.fire_crouch_right[0], (self.rect.width,
+                                                                                         self.rect.height))
+                elif self.is_facing_left:
+                    self.image = pygame.transform.scale(self.fire_crouch_left[0], (self.rect.width,
+                                                                                        self.rect.height))
+
             if self.moving_left and self.rect.left > 0:
-                self.image = self.run_left_animation()
+                if self.get_big and not self.is_fire:
+                    self.image = self.big_run_left_animation()
+                elif self.get_big and self.is_fire:
+                    self.image = self.fire_run_left_animation()
+                elif not self.get_big and not self.is_fire:
+                    self.image = self.run_left_animation()
                 self.center -= self.settings.mario_speed
                 # add mario animation
 
-                if self.settings.level == 6:
+                if self.settings.current_level == 6:
                     self.rect.y += self.settings.mario_speed/2
                     #add swimming animation
                     if self.get_big:
@@ -386,18 +518,39 @@ class Mario(Sprite):
             # ill edit this part later
             if self.jump:
                 if self.is_facing_right:
-                    self.image = self.jump_right()
+                    if self.get_big and not self.is_fire:
+                        self.image = self.big_jump_right_animation()
+                    elif self.get_big and self.is_fire:
+                        self.image = self.fire_jump_right_animation()
+                    elif not self.get_big and not self.is_fire:
+                        self.image = self.jump_right_animation()
                 elif self.is_facing_left:
-                    self.image = self.jump_left()
+                    if self.get_big and not self.is_fire:
+                        self.image = self.big_jump_left_animation()
+                    elif self.get_big and self.is_fire:
+                        self.image = self.fire_jump_left_animation()
+                    elif not self.get_big and not self.is_fire:
+                        self.image = self.jump_left_animation()
                 self.velocity = -1
                 self.rect.y += self.velocity
                 if abs(self.rect.y - 385) >= 150:
                     self.jump = False
+                    self.falling = True
             if not self.jump and self.falling:
                 if self.is_facing_right:
-                    self.image = self.jump_right()
+                    if self.get_big and not self.is_fire:
+                        self.image = self.big_jump_right_animation()
+                    elif self.get_big and self.is_fire:
+                        self.image = self.fire_jump_right_animation()
+                    elif not self.get_big and not self.is_fire:
+                        self.image = self.jump_right_animation()
                 elif self.is_facing_left:
-                    self.image = self.jump_left()
+                    if self.get_big and not self.is_fire:
+                        self.image = self.big_jump_left_animation()
+                    elif self.get_big and self.is_fire:
+                        self.image = self.fire_jump_left_animation()
+                    elif not self.get_big and not self.is_fire:
+                        self.image = self.jump_left_animation()
                 self.velocity = 1
                 self.rect.y += self.velocity * self.settings.mario_jump_speed
                 if self.rect.y > 385:
@@ -406,7 +559,7 @@ class Mario(Sprite):
                 # self.rect.top -= self.settings.mario_jump_speed
                 # add half of mario jump animation
 
-                if self.settings.level == 6:
+                if self.settings.current_level == 6:
                     # add swimming animation
                     # self.rect.y += self.settings.mario_speed / 2
                     if self.is_facing_right:
@@ -530,7 +683,24 @@ class Mario(Sprite):
                             if self.count > 5:
                                 self.count = 0
             if self.jump and self.moving_right:
-                self.image = self.jump_right()
+                if self.get_big and not self.is_fire:
+                    self.image = self.big_jump_right_animation()
+                elif self.get_big and self.is_fire:
+                    self.image = self.fire_jump_right_animation()
+                elif not self.get_big and not self.is_fire:
+                    self.image = self.jump_right_animation()
+                self.velocity = -1
+                self.rect.y += self.velocity
+                self.center += self.velocity
+                if abs(self.rect.y - 385) >= 150:
+                    self.jump = False
+            elif self.jump and self.moving_left:
+                if self.get_big and not self.is_fire:
+                    self.image = self.big_jump_left_animation()
+                elif self.get_big and self.is_fire:
+                    self.image = self.fire_jump_left_animation()
+                elif not self.get_big and not self.is_fire:
+                    self.image = self.jump_left_animation()
                 self.velocity = -1
                 self.rect.y += self.velocity
                 self.center += self.velocity
@@ -540,6 +710,12 @@ class Mario(Sprite):
                 #     self.rect.x += self.settings.mario_jump_speed
                 # elif self.is_facing_left:
                 #     self.rect.x -= self.settings.mario_jump_speed
+            if self.is_fire and self.throw_fire:
+                if self.is_facing_right:
+                    self.image = self.shooting_fireballs_right()
+                elif self.is_facing_left:
+                    self.image = self.shooting_fireballs_left()
+
 
             # honestly dont know if we need this part
             # elif not self.jump and not self.touch_ground and not self.touch_plat:
@@ -558,7 +734,13 @@ class Mario(Sprite):
 
     # ill do this when the sprites are ready
     def dead(self):
-        pass
+        self.image = pygame.transform.scale(self.mario_death[0], (self.rect.width,
+                                                                     self.rect.height))
+        self.blitme()
+        self.rect.y += self.settings.mario_speed
+        if self.rect.y == self.screen.height:
+            self.rect.x = 4
+            self.rect.y = 385
     def blitme(self):
         self.screen.blit(self.image, self.rect)
 
