@@ -1,6 +1,7 @@
 import pygame
 from pygame.sprite import Sprite
 
+
 class Pole(Sprite):
     def __init__(self, screen, pos):
         super(Pole, self).__init__()
@@ -16,4 +17,3 @@ class Pole(Sprite):
     def update(self):
         self.rect.x = self.x
         self.rect.y = self.y
-
