@@ -189,15 +189,20 @@ def check_enemy_object_collision(enemies, obstacles):
 
 
 def check_enemy_mario_collision(settings, enemies, mario):
-    collision = pygame.sprite.spritecollide(mario, enemies, False)
-    if collision:
-        for enemy in enemies:
+     for enemy in enemies:
+        collision = pygame.sprite.spritecollide(mario, enemies, False)
+        if collision:
             # checks if mario collides with any of the top 3 points of enemy
-            if mario.velocity > 0 and (mario.rect.collidepoint(enemy.rect.topright)
-                                       or mario.rect.collidepoint(enemy.rect.midtop)
-                                       or mario.rect.collidepoint(enemy.rect.topleft)):
+            if mario.vel_y > 0 and (((mario.rect.right >= enemy.rect.left and mario.rect.center[0] >= enemy.rect.left)
+                                     or (mario.rect.left <= enemy.rect.right and mario.rect.center[0] <= enemy.rect.right ))
+                                    and mario.rect.bottom >= enemy.rect.top):
+                settings.stomp.play()
+                if enemy.group_type == 1:
+                    enemy.rect.y += 16
+                mario.jump = True
                 enemy.dead = True
                 enemy.is_move = False
+                scoreboard.enemy_killed('brown_guy')
             # checks if goomba collides with mario's left top and right
             elif enemy.rect.collidepoint(mario.rect.topright) or enemy.rect.collidepoint(mario.rect.midright) or \
                     enemy.rect.collidepoint(mario.rect.bottomright) or enemy.rect.collidepoint(mario.rect.topleft) \
