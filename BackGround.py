@@ -5,9 +5,8 @@ import pygame
 from pygame.locals import *
 from MarioScoreBoard import ScoreBoard
 
+
 # exit the program
-
-
 def events():
     for event in pygame.event.get():
         if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
@@ -46,8 +45,7 @@ playerPosX = circleRadius
 playerPosY = 209
 playerVelocityX = 0
 
-# initialization of scoreboard
-sb = ScoreBoard(bg)
+sb = ScoreBoard(DS)
 
 # main loop
 while True:
@@ -67,17 +65,19 @@ while True:
     if playerPosX > stageWidth - circleRadius:
         playerPosX = stageWidth - circleRadius
 
-    if playerPosX < circleRadius:
+    elif playerPosX < circleRadius:
         playerPosX = circleRadius
 
-    if playerPosX < startScrollingPosX:
+    elif playerPosX < startScrollingPosX:
         circlePosX = playerPosX
 
     elif playerPosX > stageWidth - startScrollingPosX:
         circlePosX = playerPosX - stageWidth + W
     else:
         circlePosX = startScrollingPosX
-        stagePosX += -playerVelocityX
+        playerPosX = startScrollingPosX
+        if playerVelocityX > 0 and stagePosX + (bgWidth - W) > 0:
+            stagePosX += -playerVelocityX
 
     DS.blit(bg, (stagePosX, 0))
     sb.update_screen()
@@ -87,3 +87,4 @@ while True:
     pygame.display.update()
     CLOCK.tick(FPS)
     DS.fill(BLACK)
+
