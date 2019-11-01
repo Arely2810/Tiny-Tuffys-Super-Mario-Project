@@ -52,10 +52,14 @@ class Settings:
         self.block_items = [block_items1, block_items2]
         
 
-    def initialize_dynamic_settings(self):
-        self.mario_speed = 1.5
+        self.mario_limit = 3
+        self.fireball_width = 5
+        self.fireball_height = 5
+        self.fireballs_allowed = 2
+        self.fireball_speed = 4
+        # deal with enemy settings later
+        self.mario_speed = 3
         self.mario_jump_speed = 1.5
-        # deal with enemy later
 
     def dims(self):
         return self.screen_width, self.screen_height
