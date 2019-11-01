@@ -70,7 +70,7 @@ class Fireball(Sprite):
             self.image = self.fireballs_right()
             if self.pos_x + self.fire_height > self.screen.width or self.pos_x < 0:
                 self.velocity[0] = -self.velocity[0]
-            if self.pos_y + self.fire_height > self.screen.height or self.pos_y < mario.rect.top/2:
+            if self.pos_y + self.fire_height > 385 or self.pos_y < mario.rect.top/2:
                 self.velocity[1] = -self.velocity[1]
         elif mario.is_facing_left:
             self.image = self.fireballs_left()
@@ -80,7 +80,7 @@ class Fireball(Sprite):
             if self.pos_x + self.fire_height > self.screen.width or self.pos_x < 0:
                 self.velocity[0] = +self.velocity[0]
 
-            if self.pos_y + self.fire_height > self.screen.height or self.pos_y < mario.rect.top/2:
+            if self.pos_y + self.fire_height > 385 or self.pos_y < mario.rect.top/2:
                 self.velocity[1] = -self.velocity[1]
         self.blitme()
     # ill finish this after i have the images and code ready
