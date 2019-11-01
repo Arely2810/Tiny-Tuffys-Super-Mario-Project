@@ -82,7 +82,7 @@ class Fireball(Sprite):
 
             if self.pos_y + self.fire_height > self.screen.height or self.pos_y < mario.rect.top/2:
                 self.velocity[1] = -self.velocity[1]
-
+        self.blitme()
     # ill finish this after i have the images and code ready
     def blitme(self):
         self.screen.blit(self.image, self.rect)
