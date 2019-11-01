@@ -24,9 +24,11 @@ class Enemy(Sprite):
         self.killed_mario = False
         self.on_ground = False
         self.falling = True
+        self.stepped_on = False
 
         # default image...images can be overwrite in other classes...how do i do empty image here???
-        self.images = [pygame.image.load('images/goomba_1.png'), pygame.image.load('images/goomba_2.png')]
+        self.images = [pygame.image.load('images/goomba_1.png'), pygame.image.load('images/goomba_1.png'),
+                       pygame.image.load('images/goomba_1.png')]
         self.enemy, self.enemy_image = self.animation2()
         self.enemy_rect = self.enemy.get_rect()
         self.enemy_rect.x = pos[0]  # x
@@ -116,7 +118,9 @@ class Enemy(Sprite):
             self.enemy_rect.y += self.vel_y
 
     def dies(self):
+        self.vel_y = 1
         self.enemy_rect.y += self.vel_y
+        self.on_ground = False
 
     def reset_position(self):
         if self.enemy_rect.y >= 385 and not self.dead:
@@ -124,7 +128,7 @@ class Enemy(Sprite):
             self.vel_y = 0
             self.on_ground = True
             self.falling = False
-        elif self.enemy_rect.y < 385:
+        elif self.enemy_rect.y < 385 and not self.dead:
             self.falling = True
             self.on_ground = False
 
@@ -150,6 +154,12 @@ class Goomba(Enemy):
                            pygame.image.load("images/gray_goomba_3.png")]
 
         self.rect = self.enemy_rect
+        # self.rect.y = self.enemy_rect.y - 16
+
+    def stepped_on_animation(self):
+        self.stepped_on = True
+        self.enemy_image = self.images[2]
+        self.enemy = pygame.transform.scale(self.enemy_image, (self.width, self.height // 2))
 
     def update(self):
         self.draw()
@@ -157,9 +167,11 @@ class Goomba(Enemy):
             self.animation2()
             self.move()
             self.grounded()
-        elif self.dead and not self.killed_mario:
-            self.dying_animation()
-            self.dies()
+        elif self.dead and not self.killed_mario:  # 500 display_ = 480
+            # self.dying_animation()
+            self.stepped_on_animation()
+
+            # self.dies()
 
 
 class KoopaTroopa(Enemy):
@@ -198,8 +210,7 @@ class KoopaTroopa(Enemy):
         self.count += 1
 
     def shell_move(self):
-
-        pass
+        self.enemy_rect.x += self.vel_x  # goes left
         # after it dies, animation goes to the shell and can destroy enemies...how to do this..
         # movement is based on which direction mario pushes the shell
 
@@ -216,8 +227,8 @@ class KoopaTroopa(Enemy):
             self.animation4()
             self.pickMovement()
         if self.dead and not self.killed_mario:
-            self.dying_animation()
-            self.fall()
+            self.shell_animation()
+            self.shell_move()
 
 
 class PiranhaPlant(Enemy):
@@ -290,19 +301,19 @@ class Blooper(Enemy):
         if self.count == 80:
             self.count = 0
         if self.count % 2 == 0:
-            self.enemy_rect.y -= self.velY
-            if self.count % 2 == 0 and self.velY > 0:
+            self.enemy_rect.y -= self.vel_y
+            if self.count % 2 == 0 and self.vel_y > 0:
                 self.enemy_rect.x += self.vel_x
             if abs(self.Y - self.enemy_rect.y) == 60:
-                self.velY = self.velY * -1
+                self.vel_y = self.vel_y * -1
         self.count += 1
         # MAKE IT FOLLOW MARIO
 
     def animation2(self, timer=480):  # blooper
-        if self.velY > 0:
+        if self.vel_y > 0:
             self.enemy_image = self.images[0]
             self.enemy = pygame.transform.scale(self.enemy_image, (self.width, self.height))
-        elif self.velY < 0:
+        elif self.vel_y < 0:
             self.enemy_image = self.images[1]
             self.enemy = pygame.transform.scale(self.enemy_image, (self.width, self.height - 10))
         return self.enemy, self.enemy_image
