@@ -16,7 +16,7 @@ class Block(Sprite):
 
     def __init__(self, pos, screen, type=1, item=0):
         super(Block, self).__init__()
-        self.type = type
+        self.type = type        #0 = nothing, 1 = coin, 2 = mushroom/fireflower, 3 = one up shroom, 4 = star, 5 = lots of coins
         self.item = item
         self.pos = pos
         self.screen = screen
@@ -61,8 +61,9 @@ class Block(Sprite):
                 self.image = self.underground_hard_block_image
             if self.type == 7:
                 self.image = self.invisible_block_image
-            elif self.emptied:
-                self.image = self.empty_block_image
+            elif self.type == 8 or self.emptied == True:
+                self.image = self.empty_block_image[0]
+
         elif self.broken:
             self.destroy()
 
