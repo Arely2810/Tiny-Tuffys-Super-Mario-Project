@@ -82,6 +82,12 @@ class Mario(Sprite):
     fire_throw_left = [pygame.image.load('Cut-Sprites-For-Mario/Mario/27.png')]
 
     mario_death = [pygame.image.load('Cut-Sprites-For-Mario/Mario/62.png')]
+    fire_flagpole = [pygame.image.load('Cut-Sprites-For-Mario/Mario/1.png'),
+                     pygame.image.load('Cut-Sprites-For-Mario/Mario/4.png')]
+    big_flagpole = [pygame.image.load('Cut-Sprites-For-Mario/Mario/46.png'),
+                    pygame.image.load('Cut-Sprites-For-Mario/Mario/33.png')]
+    mario_flagpole = [pygame.image.load('Cut-Sprites-For-Mario/Mario/84.png'),
+                      pygame.image.load('Cut-Sprites-For-Mario/Mario/66.png')]
 
     def __init__(self, settings, screen):
         super(Mario, self).__init__()
@@ -115,6 +121,7 @@ class Mario(Sprite):
         self.death = False
         self.jump_count = 10
         self.sprint = False
+        self.flag = False
         # i'll do his image later cuz my sprites don't look the way i want them to
         # self.idle_image = [pygame.load('')]
 
@@ -285,30 +292,30 @@ class Mario(Sprite):
         if not self.death:
 
             if self.is_facing_right and not self.moving_right and not self.moving_left and not self.jump and not \
-                    self.falling:
+                    self.falling and not self.flag:
                 self.image = pygame.transform.scale(self.mario_idle_right[0], (self.rect.width, self.rect.height))
             elif self.is_facing_left and not self.moving_right and not self.moving_left and not self.jump and not \
-                    self.falling:
+                    self.falling and not self.flag:
                 self.image = pygame.transform.scale(self.mario_idle_left[0], (self.rect.width, self.rect.height))
 
             if self.get_big and not self.is_fire:
                 self.rect.width, self.rect.height = self.big_rect.width, self.big_rect.height
                 if self.is_facing_right and not self.moving_left and not self.moving_right and not self.jump and not \
-                        self.falling:
+                        self.falling and not self.flag:
                     self.image = pygame.transform.scale(self.big_mario_idle_right[0],
                                                         (self.rect.width, self.rect.height))
                 elif self.is_facing_left and not self.moving_left and not self.moving_right and not self.jump and not \
-                        self.falling:
+                        self.falling and not self.flag:
                     self.image = pygame.transform.scale(self.big_mario_idle_left[0],
                                                         (self.rect.width, self.rect.height))
             elif self.get_big and self.is_fire:
                 self.rect.width, self.rect.height = self.big_rect.width, self.big_rect.height
                 if self.is_facing_right and not self.moving_left and not self.moving_right and not self.jump and not \
-                        self.falling:
+                        self.falling and not self.flag:
                     self.image = pygame.transform.scale(self.fire_idle_right[0],
                                                         (self.rect.width, self.rect.height))
                 elif self.is_facing_left and not self.moving_left and not self.moving_right and not self.jump and not \
-                        self.falling:
+                        self.falling and not self.flag:
                     self.image = pygame.transform.scale(self.fire_idle_left[0],
                                                         (self.rect.width, self.rect.height))
             elif not self.get_big:
@@ -745,6 +752,58 @@ class Mario(Sprite):
                     self.image = self.shooting_fireballs_right()
                 elif self.is_facing_left:
                     self.image = self.shooting_fireballs_left()
+
+            if self.flag:
+                if not self.get_big and self.is_fire:
+                    if self.rect.y < 379:
+                        self.image = pygame.transform.scale(self.fire_flagpole[0], (self.rect.width,
+                                                                                    self.rect.height))
+                        self.vel_y = 1
+                        self.rect.y += self.vel_y
+                    elif 379 <= self.rect.y < 383:
+                        self.image = pygame.transform.scale(self.fire_flagpole[1], (self.rect.width,
+                                                                                    self.rect.height))
+                        self.rect.x += 32
+                        self.vel_y = 1
+                        self.rect.y += self.vel_y
+                    elif self.rect.y == 383:
+                        self.rect.x += 64
+                        self.rect.y = 385
+                        self.flag = False
+                elif self.get_big and not self.is_fire:
+                    if self.rect.y < 379:
+                        self.image = pygame.transform.scale(self.big_flagpole[0], (self.rect.width,
+                                                                                    self.rect.height))
+                        self.vel_y = 1
+                        self.rect.y += self.vel_y
+                    elif 379 <= self.rect.y < 383:
+                        self.image = pygame.transform.scale(self.big_flagpole[1], (self.rect.width,
+                                                                                    self.rect.height))
+                        self.rect.x += 32
+                        self.vel_y = 1
+                        self.rect.y += self.vel_y
+                    elif self.rect.y == 383:
+                        self.rect.x += 64
+                        self.rect.y = 385
+                        self.flag = False
+                elif not self.get_big and not self.is_fire:
+                    if self.rect.y < 379:
+                        self.image = pygame.transform.scale(self.mario_flagpole[0], (self.rect.width,
+                                                                                    self.rect.height))
+                        self.vel_y = 1
+                        self.rect.y += self.vel_y
+                    elif 379 <= self.rect.y < 383:
+                        self.image = pygame.transform.scale(self.mario_flagpole[1], (self.rect.width,
+                                                                                    self.rect.height))
+                        self.rect.x += 32
+                        self.vel_y = 1
+                        self.rect.y += self.vel_y
+                    elif self.rect.y == 383:
+                        self.rect.x += 64
+                        self.rect.y = 385
+                        self.flag = False
+
+
 
             # honestly dont know if we need this part
             # elif not self.jump and not self.touch_ground and not self.touch_plat:
