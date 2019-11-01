@@ -6,17 +6,20 @@ class Pipe(Sprite):
     small_pipe = pygame.image.load('images/small_pipe.png')
     medium_pipe = pygame.image.load('images/medium_pipe.png')
     large_pipe = pygame.image.load('images/large_pipe.png')
-    def __init__(self, pos, screen, size = 0):
+
+    def __init__(self, pos, screen, size=0):
         super(Pipe, self).__init__()
         self.pos = pos
         self.screen = screen
         self.size = size
         self.set_pipe_size()
 
+        # added
+        self.image, self.rect, self.x, self.y = self.set_pipe_size()
+
     def update(self):
         self.rect.x = self.x
         self.rect.y = self.y
-
 
     def set_pipe_size(self):
         if self.size == 0:
@@ -32,3 +35,5 @@ class Pipe(Sprite):
         self.x = float(self.rect.x)
         self.y = float(self.rect.y)
 
+        # added
+        return self.image, self.rect, self.x, self.y
