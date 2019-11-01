@@ -1,6 +1,7 @@
 import pygame
 from pygame.sprite import Sprite
 
+
 class Flag(Sprite):
 
     def __init__(self, screen, pos):
@@ -14,13 +15,12 @@ class Flag(Sprite):
         self.rect.x = self.rect.width
         self.rect.y = self.rect.height
         self.x = float(self.rect.x)
-        self.y= float(self.rect.y)
-
+        self.y = float(self.rect.y)
 
     def update(self):
         self.rect.x = self.x
         self.rect.y = self.y
 
-        while self.captured == True:
+        while self.captured:
             if self.y > 384:
                 self.y -= self.yvel
