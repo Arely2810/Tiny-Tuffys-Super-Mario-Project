@@ -7,6 +7,36 @@ class Fireball(Sprite):
                  pygame.image.load('Cut-Sprites-For-Mario/Misc-3/191.png'),
                  pygame.image.load('Cut-Sprites-For-Mario/Misc-3/192.png'),
                  pygame.image.load('Cut-Sprites-For-Mario/Misc-3/193.png')]
+
+    fire_idle_right = [pygame.image.load('Cut-Sprites-For-Mario/Mario/23.png')]
+    fire_run_right = [pygame.image.load('Cut-Sprites-For-Mario/Mario/19.png'),
+                      pygame.image.load('Cut-Sprites-For-Mario/Mario/20.png'),
+                      pygame.image.load('Cut-Sprites-For-Mario/Mario/21.png'),
+                      pygame.image.load('Cut-Sprites-For-Mario/Mario/22.png')]
+    fire_jump_right = [pygame.image.load('Cut-Sprites-For-Mario/Mario/17.png')]
+    fire_swim_right = [pygame.image.load('Cut-Sprites-For-Mario/Mario/11.png'),
+                       pygame.image.load('Cut-Sprites-For-Mario/Mario/12.png'),
+                       pygame.image.load('Cut-Sprites-For-Mario/Mario/13.png'),
+                       pygame.image.load('Cut-Sprites-For-Mario/Mario/14.png'),
+                       pygame.image.load('Cut-Sprites-For-Mario/Mario/15.png')]
+    fire_crouch_right = [pygame.image.load('Cut-Sprites-For-Mario/Mario/16.png')]
+    fire_throw_right = [pygame.image.load('Cut-Sprites-For-Mario/Mario/20.png')]
+
+    fire_idle_left = [pygame.image.load('Cut-Sprites-For-Mario/Mario/24.png')]
+    fire_run_left = [pygame.image.load('Cut-Sprites-For-Mario/Mario/28.png'),
+                     pygame.image.load('Cut-Sprites-For-Mario/Mario/27.png'),
+                     pygame.image.load('Cut-Sprites-For-Mario/Mario/26.png'),
+                     pygame.image.load('Cut-Sprites-For-Mario/Mario/25.png')]
+    fire_jump_left = [pygame.image.load('Cut-Sprites-For-Mario/Mario/30.png')]
+    fire_swim_left = [pygame.image.load('Cut-Sprites-For-Mario/Mario/10.png'),
+                      pygame.image.load('Cut-Sprites-For-Mario/Mario/9.png'),
+                      pygame.image.load('Cut-Sprites-For-Mario/Mario/8.png'),
+                      pygame.image.load('Cut-Sprites-For-Mario/Mario/7.png'),
+                      pygame.image.load('Cut-Sprites-For-Mario/Mario/6.png'),
+                      pygame.image.load('Cut-Sprites-For-Mario/Mario/5.png')]
+    fire_crouch_left = [pygame.image.load('Cut-Sprites-For-Mario/Mario/31.png')]
+    fire_throw_left = [pygame.image.load('Cut-Sprites-For-Mario/Mario/27.png')]
+    
     def __init__(self, settings, screen, mario):
         super(Fireball, self).__init__()
         self.screen = screen
@@ -27,7 +57,7 @@ class Fireball(Sprite):
         self.pos_x = mario.rect.right
         self.pos_y = mario.rect.top/2
 
-    def fireballs_right(self, timer=30):
+    def fireballs_right(self):
         if self.count < 7:
             self.image = pygame.transform.scale(self.fire_run_right[0], (self.rect.width,
                                                                          self.rect.height))
@@ -45,7 +75,7 @@ class Fireball(Sprite):
         self.count += 1
         return self.image
 
-    def fireballs_left(self, timer=30):
+    def fireballs_left(self):
         if self.count < 7:
             self.image = pygame.transform.scale(self.fire_run_right[3], (self.rect.width,
                                                                          self.rect.height))
@@ -84,5 +114,6 @@ class Fireball(Sprite):
                 self.velocity[1] = -self.velocity[1]
         self.blitme()
     # ill finish this after i have the images and code ready
+    
     def blitme(self):
         self.screen.blit(self.image, self.rect)
