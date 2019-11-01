@@ -104,11 +104,29 @@ def create_pipe(settings, screen, pipes):
         pipes.add(pipe)
 
         
+def create_flag(settings, screen, flags):
+    flag = Flag(screen, settings.flag_positions[settings.current_level])
+    flag.x = flag.pos[0]
+    flag.y = flag.pos[1]
+
+    flags.add(flag)
+
+def create_pole(settings, screen, poles):
+    pole = Pole(screen, settings.pole_positions[settings.current_level])
+    pole.x = pole.pos[0]
+    pole.y = pole.pos[1]
+
+    print(pole.pos)
+    poles.add(pole)
+
+
 def create_entities(settings, screen, blocks, tubes, enemies):
     create_block(settings, screen, blocks)
-    create_tubes(settings, screen, tubes)
+    create_pipes(settings, screen, tubes)
     create_enemies(settings, screen, enemies)
-    pass
+    create_pole(settings, screen, poles)
+    create_flag(settings, screen, flags)
+    
 
 def update_screen(settings, screen, stats, scores, mario, blocks, enemies, items, fireball):
     blocks.draw(screen)
