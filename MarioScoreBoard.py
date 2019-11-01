@@ -55,7 +55,9 @@ class ScoreBoard:
 
         score_rect = score_image.get_rect()
         score_rect.center = self.screen_rect.center
-        score_rect.top = score_rect.top
+
+    def update_screen(self):
+        self.screen.blit(score_image, score_rect)
 
     '''def setup_time(self):
         time = self.time
