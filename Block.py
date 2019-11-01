@@ -71,12 +71,12 @@ class Block(Sprite):
 
     def destroy(self):
         #play animation of brick getting destroyed when big mario jumps into it
-        if breaking < 20:
-            self.image = broken_block_image[0]
-        if breaking >= 20 and breaking < 40:
-            self.iamge = broken_block_image[1]
-        if breaking >= 40 and breaking < 60:
-            self.image = broken_block_image[2]
+        if self.breaking < 20:
+            self.image = self.broken_block_image[0]
+        if self.breaking >= 20 and self.breaking < 40:
+            self.iamge = self.broken_block_image[1]
+        if self.breaking >= 40 and breaking < 60:
+            self.image = self.broken_block_image[2]
         else:
             self.kill()
         self.breaking += 1
