@@ -118,14 +118,20 @@ def create_pole(settings, screen, poles):
 
     print(pole.pos)
     poles.add(pole)
+    
+def create_ground(settings, screen, grounds):
+    while settings.current_ground < settings.number_of_grounds[settings.current_level]:
+        ground = Ground(screen, settings.ground_positions[settings.current_level][settings.current_ground], settings.ground_sizes[settings.current_level][settings.current_ground])
+        grounds.add(ground)
+        settings.current_ground += 1
 
-
-def create_entities(settings, screen, blocks, tubes, enemies):
+def create_entities(settings, screen, blocks, pipes, enemies, flags, poles, grounds):
     create_block(settings, screen, blocks)
     create_pipes(settings, screen, tubes)
     create_enemies(settings, screen, enemies)
     create_pole(settings, screen, poles)
     create_flag(settings, screen, flags)
+    create_grounds(settings, screen, grounds)
     
 
 def update_screen(settings, screen, stats, scores, mario, blocks, enemies, items, fireball):
