@@ -1,13 +1,14 @@
 import pygame
 from pygame.sprite import Sprite
 
+
 class Ground(Sprite):
     def __init__(self, screen, pos, size):
         super(Ground, self).__init__()
         self.screen = screen
         self.pos = pos
-        self.image = pygame.Surface((size), pygame.SRCALPHA)
-        self.image = self.image.convert_alpha()
+        self.image = pygame.Surface(size, pygame.SRCALPHA)
+        self.image = self.image.convert_alpha(screen)  # ?
         self.rect = self.image.get_rect()
 
         self.rect.x = self.pos[0]
