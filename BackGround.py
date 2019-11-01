@@ -3,6 +3,7 @@ import random
 import sys
 import pygame
 from pygame.locals import *
+from MarioScoreBoard import ScoreBoard
 
 # exit the program
 
@@ -44,6 +45,7 @@ circlePosX = circleRadius
 playerPosX = circleRadius
 playerPosY = 209
 playerVelocityX = 0
+sb = ScoreBoard(bg)
 
 
 # main loop
@@ -77,6 +79,7 @@ while True:
         stagePosX += -playerVelocityX
 
     DS.blit(bg, (stagePosX, 0))
+    DS.blit(sb, (stagePosX, 0))
 
     pygame.draw.circle(DS, WHITE, (int(circlePosX), playerPosY - 10), circleRadius, 0)
 
