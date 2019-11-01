@@ -18,7 +18,9 @@ class ScoreBoard:
         self.font = pygame.font.SysFont(None, 48)
         self.center_x = 250
 
-        self.setup_score()
+        # self.setup_score()
+
+        self.score_image, self.score_rect = self.setup_score()
 
     ''' self.setup_time()
         self.setup_world()
@@ -56,28 +58,29 @@ class ScoreBoard:
         score_rect = score_image.get_rect()
         score_rect.center = self.screen_rect.center
 
+        # added
+        score_rect.top = self.screen_rect.top
+        return score_image, score_rect
+
     def update_screen(self):
-        self.screen.blit(score_image, score_rect)
+        self.screen.blit(self.score_image, self.score_rect)
 
     '''def setup_time(self):
         time = self.time
         time_str = "Time: {}".format(time)
         self.screen.draw.text((190, 50), time_str, self.white)
         self.screen.update()
-
     def setup_world(self):
         world = self.world
         level = self.level
         world_str = "World: {}-{}".format(world, level)
         self.screen.draw.text((290, 50), world_str, self.white)
         self.screen.update()
-
     def setup_coins(self):
         coins = self.coins
         coins_str = "Coins: {}".format(coins)
         self.screen.draw.text((390, 50), coins_str, self.white)
         self.screen.update()
-
     def setup_lives(self):
         lives = self.lives
         lives_str = "Lives: {}".format(lives)
