@@ -13,19 +13,17 @@ class ScoreBoard:
         self.coins = 0
         self.screen = screen
         self.screen_rect = screen.get_rect()
-        # self.font_name = pygame.font.match_font('mario font 256')
         self.white = (255, 255, 255)
-        self.font = pygame.font.SysFont(None, 48)
-        self.center_x = 250
+        self.font = pygame.font.SysFont(None, 25)
+        self.center = (90, 50)
 
-        # self.setup_score()
-
-        self.score_image, self.score_rect = self.setup_score()
-
-    ''' self.setup_time()
+        self.setup_score()
+        self.setup_time()
         self.setup_world()
         self.setup_coins()
-        self.setup_lives()'''
+        self.setup_lives()
+
+        self.update_screen()
 
     def enemy_killed(self, enemy_type):
         if enemy_type == 'turtle':
@@ -53,36 +51,42 @@ class ScoreBoard:
     def setup_score(self):
         score = self.score
         score_str = "Score: {}".format(score)
-        score_image = self.font.render(score_str, True, self.white)
+        self.score_image = self.font.render(score_str, True, self.white)
 
-        score_rect = score_image.get_rect()
-        score_rect.center = self.screen_rect.center
+        self.score_rect = (10, 10)
 
-        # added
-        score_rect.top = self.screen_rect.top
-        return score_image, score_rect
-
-    def update_screen(self):
-        self.screen.blit(self.score_image, self.score_rect)
-
-    '''def setup_time(self):
+    def setup_time(self):
         time = self.time
         time_str = "Time: {}".format(time)
-        self.screen.draw.text((190, 50), time_str, self.white)
-        self.screen.update()
+        self.time_image = self.font.render(time_str, True, self.white)
+
+        self.time_rect = (110, 10)
+
     def setup_world(self):
         world = self.world
         level = self.level
         world_str = "World: {}-{}".format(world, level)
-        self.screen.draw.text((290, 50), world_str, self.white)
-        self.screen.update()
+        self.world_image = self.font.render(world_str, True, self.white)
+
+        self.world_rect = (220, 10)
+
     def setup_coins(self):
         coins = self.coins
         coins_str = "Coins: {}".format(coins)
-        self.screen.draw.text((390, 50), coins_str, self.white)
-        self.screen.update()
+        self.coin_image = self.font.render(coins_str, True, self.white)
+
+        self.coin_rect = (330, 10)
+
     def setup_lives(self):
         lives = self.lives
         lives_str = "Lives: {}".format(lives)
-        self.screen.draw.text((490, 50), lives_str, self.white)
-        self.screen.update()'''
+        self.lives_image = self.font.render(lives_str, True, self.white)
+
+        self.lives_rect = (425, 10)
+
+    def update_screen(self):
+        self.screen.blit(self.score_image, self.score_rect)
+        self.screen.blit(self.time_image, self.time_rect)
+        self.screen.blit(self.world_image, self.world_rect)
+        self.screen.blit(self.coin_image, self.coin_rect)
+        self.screen.blit(self.lives_image, self.lives_rect)
