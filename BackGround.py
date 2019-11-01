@@ -45,8 +45,9 @@ circlePosX = circleRadius
 playerPosX = circleRadius
 playerPosY = 209
 playerVelocityX = 0
-sb = ScoreBoard(bg)
 
+# initialization of scoreboard
+sb = ScoreBoard(bg)
 
 # main loop
 while True:
@@ -79,7 +80,7 @@ while True:
         stagePosX += -playerVelocityX
 
     DS.blit(bg, (stagePosX, 0))
-    DS.blit(sb, (stagePosX, 0))
+    sb.update_screen()
 
     pygame.draw.circle(DS, WHITE, (int(circlePosX), playerPosY - 10), circleRadius, 0)
 
