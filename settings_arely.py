@@ -35,6 +35,8 @@ class Settings:
         pipe_size1 = [0,1,2,2,0, 0]
         pole_position1 = (6304, 80)
         flag_position1 = (6287, 96)
+        ground_position1 = ((0, 416), (2272,416) , (2848, 416), (4896, 416))
+        ground_size1 = ((2208, 100), (480, 100), (2048, 100), (2272, 100))
         #Level 2
         block_position2 = [(50,50), (100, 50,),(400, 50)]
         block_type2 = [3, 3, 4]
@@ -52,8 +54,10 @@ class Settings:
         self.block_types = [block_type1,block_type2]
         self.block_positions = [block_position1, block_position2]
         self.block_items = [block_items1, block_items2]
-         self.flag_positions = [flag_position1]
+        self.flag_positions = [flag_position1]
         self.pole_positions = [pole_position1]
+        self.ground_positions = [ground_position1]
+        self.ground_sizes = [ground_size1]
         
 
         self.mario_limit = 3
