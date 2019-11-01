@@ -33,6 +33,8 @@ class Settings:
         block_items1 = [1, 0, 2, 0, 1, 0, 1, 3, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,0 ,1, 5, 1, 4 ,1, 1, 2, 1, 0, 0, 0, 0,0, 1, 1,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0,0,0, 0, 0, 0, 0, 0, 0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0, 0, 1, 0, 0,0 ,0 ,0 ,0 ,0,0 ,0 ,0 ,0, 0,0 ,0 ,0, 0, 0 ,0 ,0 ,0 ,0 ,0, 0, 0, 0, 0, 0 ,0 ,0,0,0 ,0 ,0 ,0 ,0 ,0 ,0,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0]
         pipe_position1 = [(896, 352), (1216,320), (1472, 288), (1824, 288), (5216, 352), (5728, 352)]
         pipe_size1 = [0,1,2,2,0, 0]
+        pole_position1 = (6304, 80)
+        flag_position1 = (6287, 96)
         #Level 2
         block_position2 = [(50,50), (100, 50,),(400, 50)]
         block_type2 = [3, 3, 4]
@@ -50,6 +52,8 @@ class Settings:
         self.block_types = [block_type1,block_type2]
         self.block_positions = [block_position1, block_position2]
         self.block_items = [block_items1, block_items2]
+         self.flag_positions = [flag_position1]
+        self.pole_positions = [pole_position1]
         
 
         self.mario_limit = 3
