@@ -259,7 +259,7 @@ class Mario(Sprite):
             self.rect.x = 4
             self.rect.y = 385
 
-    def update(self):
+        def update(self):
         if self.count >= 30:
             self.count = 0
 
@@ -287,7 +287,7 @@ class Mario(Sprite):
                     self.rect.width, self.rect.height = self.big_rect.width, self.big_rect.height
                     self.image = pygame.transform.scale(self.fire_idle_left[0], (self.rect.width, self.rect.height))
 
-            if self.moving_right and self.rect.right < self.screen_rect.right / 2:
+            if self.moving_right and self.rect.right < self.screen_rect.right:  # / 2:
                 if self.is_big and not self.is_fire:
                     self.image = self.big_run_right_animation()
                 elif self.is_big and self.is_fire:
@@ -296,6 +296,10 @@ class Mario(Sprite):
                     self.image = self.run_right_animation()
                 self.vel_x = 1
                 self.rect.x += self.vel_x
+                if self.rect.x >= self.settings.start_scrolling_pos_x:
+                    self.rect.x = self.settings.start_scrolling_pos_x
+                    if self.settings.bg_x + (self.settings.bg_width + - self.settings.screen_width) >= 0:
+                        self.settings.bg_x -= self.vel_x
             elif self.moving_right and self.rect.right == self.screen_rect.right / 2:
                 if self.is_big and not self.is_fire:
                     self.image = self.big_run_right_animation()
@@ -313,6 +317,10 @@ class Mario(Sprite):
                         self.image = self.run_right_animation()
                     self.vel_x = 1
                     self.rect.x += self.vel_x * 2
+                    if self.rect.x >= self.settings.start_scrolling_pos_x:
+                        self.rect.x = self.settings.start_scrolling_pos_x
+                        if self.settings.bg_x + (self.settings.bg_width + - self.settings.screen_width) >= 0:
+                            self.settings.bg_x -= (self.vel_x * 2) + self.vel_x
                 elif self.is_facing_left:
                     if self.is_big and not self.is_fire:
                         self.image = self.big_run_left_animation()
