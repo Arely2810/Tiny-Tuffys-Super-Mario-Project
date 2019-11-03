@@ -162,12 +162,13 @@ def create_enemy(settings, screen, enemies):
         settings.current_enemies += 1
 
 
-def check_collision(settings, enemies, mario, blocks, pipes):
-    check_enemy_mario_collision(settings, enemies, mario)
+def check_collision(settings, scoreboard, enemies, mario, blocks, pipes):
+    check_enemy_mario_collision(settings, scoreboard, enemies, mario)
     check_enemy_object_collision(enemies, blocks)
     check_enemy_object_collision(enemies, pipes)
     # check_mario_object_collision(mario, blocks)
     # check_mario_object_collision(mario, pipes)
+    check_mario_block_collision(mario, blocks)
 
 
 # def check_mario_object_collision(mario, obstacles):
@@ -181,6 +182,18 @@ def check_collision(settings, enemies, mario, blocks, pipes):
 #                     mario.rect.collidepoint(obstacle.rect.midleft) or mario.rect.collidepoint(
 #                     obstacle.rect.bottomleft):
 #                 mario.vel_x = 0
+
+
+def check_mario_block_collision(mario, blocks):
+    for block in blocks:
+        collision = pygame.sprite.spritecollide(mario, blocks, False)
+        if collision:
+            if mario.rect.collidepoint(block.rect.bottomleft) or \
+                    mario.rect.collidepoint(block.rect.midbottom) or \
+                    mario.rect.collidepoint(block.rect.bottomright):
+                # block.broken = True
+                # block.bumped()
+                block.bump = True
 
 
 def check_enemy_object_collision(enemies, obstacles):
@@ -201,18 +214,19 @@ def check_enemy_object_collision(enemies, obstacles):
                     enemy.on_ground = True
 
 
-def check_enemy_mario_collision(settings, enemies, mario):
-     for enemy in enemies:
+def check_enemy_mario_collision(settings, scoreboard, enemies, mario):
+    for enemy in enemies:
         collision = pygame.sprite.spritecollide(mario, enemies, False)
         if collision:
             # checks if mario collides with any of the top 3 points of enemy
             if mario.vel_y > 0 and (((mario.rect.right >= enemy.rect.left and mario.rect.center[0] >= enemy.rect.left)
-                                     or (mario.rect.left <= enemy.rect.right and mario.rect.center[0] <= enemy.rect.right ))
+                                     or (mario.rect.left <= enemy.rect.right and mario.rect.center[
+                                        0] <= enemy.rect.right))
                                     and mario.rect.bottom >= enemy.rect.top):
                 settings.stomp.play()
                 if enemy.group_type == 1:
                     enemy.rect.y += 16
-                mario.jump = True
+                mario.mario_bounce = True
                 enemy.dead = True
                 enemy.is_move = False
                 scoreboard.enemy_killed('brown_guy')
@@ -224,7 +238,7 @@ def check_enemy_mario_collision(settings, enemies, mario):
                 mario.death = True
                 for enemy_ in enemies:  # this loop stops all the enemies
                     enemy_.killed_mario = True
-            elif mario.velocity < 0 and collision:
+            elif mario.vel_y < 0 and collision:
                 mario.death = True
                 enemy.killed_mario = True
             if enemy.enemy_rect.y > settings.screen_width:
@@ -240,31 +254,40 @@ def scroll_eveything_left(settings, mario, enemies, blocks, pipes):
     for enemy in enemies:
         if enemy.group_type == 1:
             if mario.moving_right and mario.rect.x == settings.start_scrolling_pos_x:
-                enemy.enemy_rect.x -= settings.mario_speed/2
+                if mario.sprint:
+                    enemy.enemy_rect.x -= mario.vel_x * 4
+                elif not mario.sprint:
+                    enemy.enemy_rect.x -= mario.vel_x
         elif enemy.group_type == 2:
             if mario.moving_right and mario.rect.x == settings.start_scrolling_pos_x:
-                enemy.enemy_rect.x -= settings.mario_speed/2
-                enemy.path_left -= settings.mario_speed/2
-                enemy.path_right -= settings.mario_speed/2
+                if mario.sprint:
+                    enemy.enemy_rect.x -= mario.vel_x * 4
+                    enemy.path_left -= mario.vel_x * 4
+                    enemy.path_right -= mario.vel_x * 4
+                elif not mario.sprint:
+                    enemy.enemy_rect.x -= mario.vel_x
+                    enemy.path_left -= mario.vel_x
+                    enemy.path_right -= mario.vel_x
         elif enemy.group_type == 3:
             if mario.moving_right and mario.rect.x == settings.start_scrolling_pos_x:
-                enemy.center_rot_x -= settings.mario_speed/2
+                if mario.sprint:
+                    enemy.center_rot_x -= mario.vel_x * 4
+                elif not mario.sprint:
+                    enemy.center_rot_x -= mario.vel_x
 
     for block in blocks:
         if mario.moving_right and mario.rect.x == settings.start_scrolling_pos_x:
-            block.x -= settings.mario_speed/2
+            if mario.sprint:
+                block.x -= mario.vel_x * 4
+            elif not mario.sprint:
+                block.x -= mario.vel_x
 
     for pipe in pipes:
         if mario.moving_right and mario.rect.x == settings.start_scrolling_pos_x:
-            pipe.x -= settings.mario_speed/2
-
-
-# MOVE THIS TO GAME_FUNCTIONS IN MASTER....make pixel range bigger???
-def mario_in_range(mario, enemies):
-    for enemy in enemies:
-        if enemy.enemy_rect.x - mario.rect.x <= 800:
-            enemy.is_move = True
-
+            if mario.sprint:
+                pipe.x -= mario.vel_x * 4
+            elif not mario.sprint:
+                pipe.x -= mario.vel_x
 
 def create_flag(settings, screen, flags):
     flag = Flag(screen, settings.flag_positions[settings.current_level])
