@@ -10,6 +10,7 @@ import game_functions as gf
 from settings import Settings
 from scoreboard import ScoreBoard
 
+
 pygame.init()
 CLOCK = pygame.time.Clock()
 settings = Settings()
@@ -29,8 +30,8 @@ gf.create_block(settings, display_screen, blocks)
 gf.create_pipe(settings, display_screen, pipes)
 gf.create_enemy(settings, display_screen, enemies)
 
-goom = Goomba(settings.display_screen, (800, 383), 1)
-enemies.add(goom)
+# goom = Goomba(settings.display_screen, (800, 383), 1)
+# enemies.add(goom)
 
 # main loop
 while True:
@@ -50,6 +51,9 @@ while True:
     blocks.draw(display_screen)
     pipes.update()
     pipes.draw(display_screen)
+
+    if mario.death:
+        gf.reset_game(display_screen, settings, mario, enemies, blocks, pipes)
 
     pygame.display.update()
     CLOCK.tick(settings.FPS)
