@@ -16,22 +16,22 @@ def mario_move(mario, settings, screen, fireball):
             sys.exit()
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RIGHT:
-                #mario.is_idle = False
+                # mario.is_idle = False
                 mario.is_facing_left = False
                 mario.moving_left = False
                 mario.is_facing_right = True
                 mario.moving_right = True
                 mario.go_down = False
             elif event.key == pygame.K_LEFT:
-                #mario.is_idle = False
+                # mario.is_idle = False
                 mario.is_facing_right = False
                 mario.moving_right = False
                 mario.is_facing_left = True
                 mario.moving_left = True
                 mario.go_down = False
             elif event.key == pygame.K_SPACE:
-               # check_mario_ground(settings, screen, mario, ground)
-               #  mario.is_idle = False
+                # check_mario_ground(settings, screen, mario, ground)
+                #  mario.is_idle = False
                 if not mario.falling:
                     mario.moving_left = False
                     mario.moving_right = False
@@ -109,9 +109,9 @@ def create_block(settings, screen, blocks):
 
 
 # def create_item(settings, screen, blocks, items):
-    # for b in blocks:
-    #     if b.item_type == 1:
-    #         item = Item(1)
+# for b in blocks:
+#     if b.item_type == 1:
+#         item = Item(1)
 #     pass
 
 
@@ -188,12 +188,21 @@ def check_mario_block_collision(mario, blocks):
     for block in blocks:
         collision = pygame.sprite.spritecollide(mario, blocks, False)
         if collision:
-            if mario.rect.collidepoint(block.rect.bottomleft) or \
+            if mario.rect.collidepoint(block.rect.topleft) or \
+                    mario.rect.collidepoint(block.rect.midleft) or \
+                    mario.rect.collidepoint(block.rect.topright) or \
+                    mario.rect.collidepoint(block.rect.midright):
+                mario.vel_x = 0
+            elif mario.rect.collidepoint(block.rect.bottomleft) or \
                     mario.rect.collidepoint(block.rect.midbottom) or \
                     mario.rect.collidepoint(block.rect.bottomright):
-                # block.broken = True
-                # block.bumped()
                 block.bump = True
+                mario.jump = False
+                mario.falling = True
+            if block.rect.collidepoint(mario.rect.bottomleft) or \
+                    block.rect.collidepoint(mario.rect.midbottom) or \
+                    block.rect.collidepoint(mario.rect.bottomright):
+                mario.falling = False
 
 
 def check_enemy_object_collision(enemies, obstacles):
@@ -221,12 +230,14 @@ def check_enemy_mario_collision(settings, scoreboard, enemies, mario):
             # checks if mario collides with any of the top 3 points of enemy
             if mario.vel_y > 0 and (((mario.rect.right >= enemy.rect.left and mario.rect.center[0] >= enemy.rect.left)
                                      or (mario.rect.left <= enemy.rect.right and mario.rect.center[
-                                        0] <= enemy.rect.right))
+                        0] <= enemy.rect.right))
                                     and mario.rect.bottom >= enemy.rect.top):
                 settings.stomp.play()
                 if enemy.group_type == 1:
                     enemy.rect.y += 16
+                mario.last_y_position = mario.rect.y
                 mario.mario_bounce = True
+                mario.jump = False
                 enemy.dead = True
                 enemy.is_move = False
                 scoreboard.enemy_killed('brown_guy')
@@ -234,17 +245,17 @@ def check_enemy_mario_collision(settings, scoreboard, enemies, mario):
             elif enemy.rect.collidepoint(mario.rect.topright) or enemy.rect.collidepoint(mario.rect.midright) or \
                     enemy.rect.collidepoint(mario.rect.bottomright) or enemy.rect.collidepoint(mario.rect.topleft) \
                     or enemy.rect.collidepoint(mario.rect.midleft) or enemy.rect.collidepoint(mario.rect.bottomleft) \
-                    or enemy.rect.collidepoint(mario.rect.midtop):
+                    or enemy.rect.collidepoint(mario.rect.midtop):  # and not mario.mario_bounce:
                 mario.death = True
                 for enemy_ in enemies:  # this loop stops all the enemies
                     enemy_.killed_mario = True
-            elif mario.vel_y < 0 and collision:
+            elif mario.vel_y < 0 and collision:  # and not mario.mario_bounce:
                 mario.death = True
                 enemy.killed_mario = True
-            if enemy.enemy_rect.y > settings.screen_width:
-                enemies.remove(enemy)
-            elif enemy.stepped_on and enemy.count == 5:
-                enemies.remove(enemy)
+            # if enemy.enemy_rect.y > settings.screen_width:
+            #     enemies.remove(enemy)
+            # if enemy.stepped_on and enemy.count == 5:
+            #     enemies.remove(enemy)
 
 
 def scroll_eveything_left(settings, mario, enemies, blocks, pipes):
@@ -289,6 +300,14 @@ def scroll_eveything_left(settings, mario, enemies, blocks, pipes):
             elif not mario.sprint:
                 pipe.x -= mario.vel_x
 
+
+# MOVE THIS TO GAME_FUNCTIONS IN MASTER....make pixel range bigger???
+def mario_in_range(mario, enemies):
+    for enemy in enemies:
+        if enemy.enemy_rect.x - mario.rect.x <= 800:
+            enemy.is_move = True
+
+
 def create_flag(settings, screen, flags):
     flag = Flag(screen, settings.flag_positions[settings.current_level])
     flag.x = flag.pos[0]
@@ -304,7 +323,6 @@ def create_pole(settings, screen, poles):
 
     print(pole.pos)
     poles.add(pole)
-
 
 # def create_entities(settings, screen, blocks, tubes, enemies):
 #     create_block(settings, screen, blocks)
