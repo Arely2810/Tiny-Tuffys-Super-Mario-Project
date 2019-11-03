@@ -172,8 +172,8 @@ def check_collision(settings, scoreboard, enemies, mario, blocks, pipes):
     check_enemy_object_collision(enemies, pipes)
     # check_mario_object_collision(mario, blocks)
     # check_mario_object_collision(mario, pipes)
-    check_mario_block_collision(mario, blocks)
-    check_mario_block_collision(mario, pipes)
+    check_mario_object_collision(mario, blocks)
+    check_mario_object_collision(mario, pipes)
 
 
 # def check_mario_object_collision(mario, obstacles):
@@ -206,7 +206,7 @@ def check_collision(settings, scoreboard, enemies, mario, blocks, pipes):
 #                 mario.rect.right = pipe.rect.left
 
 
-def check_mario_block_collision(mario, blocks):
+def check_mario_object_collision(mario, blocks):
     for block in blocks:
         collision = pygame.sprite.spritecollide(mario, blocks, False)
         if collision:
