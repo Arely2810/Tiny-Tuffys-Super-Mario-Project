@@ -29,6 +29,9 @@ gf.create_block(settings, display_screen, blocks)
 gf.create_pipe(settings, display_screen, pipes)
 gf.create_enemy(settings, display_screen, enemies)
 
+goom = Goomba(settings.display_screen, (800, 383), 1)
+enemies.add(goom)
+
 # main loop
 while True:
     # gf.check_events(mario)
@@ -37,7 +40,7 @@ while True:
 
     gf.mario_in_range(mario, enemies)
     gf.scroll_eveything_left(settings, mario, enemies, blocks, pipes)
-    gf.check_collision(settings, enemies, mario, blocks, pipes)
+    gf.check_collision(settings, scoreboard, enemies, mario, blocks, pipes)
 
     scoreboard.update_screen()
 
