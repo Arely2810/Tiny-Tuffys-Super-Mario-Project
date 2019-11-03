@@ -1,6 +1,8 @@
 import pygame
 from pygame.sprite import Sprite
 
+import game_functions as gf
+
 
 class Mario(Sprite):
     mario_idle_right = [pygame.image.load('Cut-Sprites-For-Mario/Mario/75.png')]
@@ -255,9 +257,9 @@ class Mario(Sprite):
                                                                   self.rect.height))
         self.blitme()
         self.rect.y += self.settings.mario_speed
-        if self.rect.y == self.settings.screen_height:
-            self.rect.x = 4
-            self.rect.y = 385
+        # if self.rect.y >= self.settings.screen_height:
+            # self.rect.x = 4
+            # self.rect.y = 385
 
     def update(self):
         if self.count >= 30:
@@ -391,7 +393,53 @@ class Mario(Sprite):
                 if self.rect.y > 385:
                     self.falling = False
                     self.rect.y = 385
-            if self.falling:
+            # if self.falling:
+            #     if self.is_facing_right:
+            #         if self.is_big and not self.is_fire:
+            #             self.image = self.big_jump_right_animation()
+            #         elif self.is_big and self.is_fire:
+            #             self.image = self.fire_jump_right_animation()
+            #         elif not self.is_big and not self.is_fire:
+            #             self.image = self.jump_right_animation()
+            #     elif self.is_facing_left:
+            #         if self.is_big and not self.is_fire:
+            #             self.image = self.big_jump_left_animation()
+            #         elif self.is_big and self.is_fire:
+            #             self.image = self.fire_jump_left_animation()
+            #         elif not self.is_big and not self.is_fire:
+            #             self.image = self.jump_left_animation()
+            #     self.vel_y = 1
+            #     self.rect.y += self.vel_y * self.settings.mario_jump_speed
+            #     if self.rect.y > 385:
+            #         self.falling = False
+            #         self.rect.y = 385
+
+            if self.mario_bounce and self.falling:
+                self.last_y_position = self.rect.y
+                self.falling = False
+
+            if self.mario_bounce:
+                if self.is_facing_right:
+                    if self.is_big and not self.is_fire:
+                        self.image = self.big_jump_right_animation()
+                    elif self.is_big and self.is_fire:
+                        self.image = self.fire_jump_right_animation()
+                    elif not self.is_big and not self.is_fire:
+                        self.image = self.jump_right_animation()
+                elif self.is_facing_left:
+                    if self.is_big and not self.is_fire:
+                        self.image = self.big_jump_left_animation()
+                    elif self.is_big and self.is_fire:
+                        self.image = self.fire_jump_left_animation()
+                    elif not self.is_big and not self.is_fire:
+                        self.image = self.jump_left_animation()
+                self.vel_y = -1
+                self.rect.y += self.vel_y
+                if abs(self.last_y_position - self.rect.y) > 50:
+                    self.mario_bounce = False
+                    self.falling = True
+
+            if not self.mario_bounce and self.falling:
                 if self.is_facing_right:
                     if self.is_big and not self.is_fire:
                         self.image = self.big_jump_right_animation()
@@ -411,26 +459,7 @@ class Mario(Sprite):
                 if self.rect.y > 385:
                     self.falling = False
                     self.rect.y = 385
-            if self.mario_bounce:
-                if self.is_facing_right:
-                    if self.is_big and not self.is_fire:
-                        self.image = self.big_jump_right_animation()
-                    elif self.is_big and self.is_fire:
-                        self.image = self.fire_jump_right_animation()
-                    elif not self.is_big and not self.is_fire:
-                        self.image = self.jump_right_animation()
-                elif self.is_facing_left:
-                    if self.is_big and not self.is_fire:
-                        self.image = self.big_jump_left_animation()
-                    elif self.is_big and self.is_fire:
-                        self.image = self.fire_jump_left_animation()
-                    elif not self.is_big and not self.is_fire:
-                        self.image = self.jump_left_animation()
-                self.vel_y = -1
-                self.rect.y += self.vel_y
-                if abs(self.last_y_position - self.rect.y) > 5:
-                    self.mario_bounce = False
-                    self.falling = True
+
             if self.is_fire and self.throw_fire:
                 if self.is_facing_right:
                     self.image = self.shooting_fireballs_right()
@@ -486,6 +515,4 @@ class Mario(Sprite):
 
     def blitme(self):
         self.screen.blit(self.image, self.rect)
-
-
 
