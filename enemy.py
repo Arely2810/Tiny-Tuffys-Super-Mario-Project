@@ -154,24 +154,35 @@ class Goomba(Enemy):
                            pygame.image.load("images/gray_goomba_3.png")]
 
         self.rect = self.enemy_rect
-        # self.rect.y = self.enemy_rect.y - 16
+        self.rect.y = self.enemy_rect.y
+
+        self.dying = 0
+        self.is_drawn = True
 
     def stepped_on_animation(self):
-        self.stepped_on = True
+        # if self.count >= 5:
+        #     self.count = 0
+        # if self.count < 5:
+        self.is_move = False
         self.enemy_image = self.images[2]
         self.enemy = pygame.transform.scale(self.enemy_image, (self.width, self.height // 2))
+        # elif self.count >= 5:
+        #     pygame.sprite.Sprite.kill(self)
+        # self.count += 1
 
     def update(self):
         self.draw()
-        if self.is_move and not self.killed_mario:
+        if self.is_move and not self.killed_mario and not self.dead:
             self.animation2()
             self.move()
             self.grounded()
-        elif self.dead and not self.killed_mario:  # 500 display_ = 480
+        elif self.dead and not self.killed_mario:  # and not self.is_move:  # 500 display_ = 480
             # self.dying_animation()
+            self.is_move = False
             self.stepped_on_animation()
-
-            # self.dies()
+            if self.dying == 15:
+                self.kill()
+            self.dying += 1
 
 
 class KoopaTroopa(Enemy):
@@ -229,6 +240,7 @@ class KoopaTroopa(Enemy):
         if self.dead and not self.killed_mario:
             self.shell_animation()
             self.shell_move()
+            # ...this might need a different collision...?
 
 
 class PiranhaPlant(Enemy):
@@ -249,12 +261,12 @@ class PiranhaPlant(Enemy):
     def update(self):
         # HOW DO I MAKE IT NOT MOVE IF mario is adjacent(?) to pipe or on top(?) of the pipe??
         self.draw()
-        # if self.is_move and not self.killed_mario:
-        #     self.animation2()
-        #     self.move_path_y(self.top, self.bot)
-        # if self.dead and not self.killed_mario:
-        #     self.dying_animation()
-        #     self.fall()
+        if self.is_move and not self.killed_mario:
+            self.animation2()
+            self.move_path_y(self.top, self.bot)
+        if self.dead and not self.killed_mario:
+            self.dying_animation()
+            self.fall()
 
 
 class KoopaParatroopa(Enemy):
@@ -281,12 +293,12 @@ class KoopaParatroopa(Enemy):
 
     def update(self):
         self.draw()
-        # if self.is_move and not self.killed_mario:
-        #     self.animation2()
-        #     self.move_path_y(self.start, self.end)
-        # if self.dead and not self.killed_mario:
-        #     self.dying_animation()
-        #     self.fall()
+        if self.is_move and not self.killed_mario:
+            self.animation2()
+            self.move_path_y(self.start, self.end)
+        if self.dead and not self.killed_mario:
+            self.dying_animation()
+            self.fall()
 
 
 class Blooper(Enemy):
@@ -320,12 +332,12 @@ class Blooper(Enemy):
 
     def update(self):
         self.draw()
-        # if self.is_move and not self.killed_mario:
-        #     self.animation2()
-        #     self.swim_after_mario()
-        # if self.dead and not self.killed_mario:
-        #     self.dying_animation()
-        #     self.fall()
+        if self.is_move and not self.killed_mario:
+            self.animation2()
+            self.swim_after_mario()
+        if self.dead and not self.killed_mario:
+            self.dying_animation()
+            self.fall()
 
 
 class CheepCheep(Enemy):
@@ -353,12 +365,12 @@ class CheepCheep(Enemy):
 
     def update(self):
         self.draw()
-        # if self.is_move and not self.killed_mario:
-        #     self.animation2()
-        #     self.pickMovement()
-        # if self.dead and not self.killed_mario:
-        #     self.dying_animation()
-        #     self.fall()
+        if self.is_move and not self.killed_mario:
+            self.animation2()
+            self.pickMovement()
+        if self.dead and not self.killed_mario:
+            self.dying_animation()
+            self.fall()
 
 
 class Podoboo(Enemy):  # NO DYING ANIMATION??
@@ -394,12 +406,12 @@ class Podoboo(Enemy):  # NO DYING ANIMATION??
 
     def update(self):
         self.draw()
-        # if self.is_move and not self.killed_mario:
-        #     self.animation2()
-        #     self.move()
-        # if self.dead and not self.killed_mario:
-        #     self.dying_animation()
-        #     self.fall()
+        if self.is_move and not self.killed_mario:
+            self.animation2()
+            self.move()
+        if self.dead and not self.killed_mario:
+            self.dying_animation()
+            self.fall()
 
 
 class FireBar(Enemy):  # NO DYING ANIMATION???
@@ -449,12 +461,12 @@ class FireBar(Enemy):  # NO DYING ANIMATION???
 
     def update(self):
         self.draw()
-        # if self.is_move and not self.killed_mario:
-        #     self.animation()
-        #     self.rotate()
-        # if self.dead and not self.killed_mario:
-        #     self.dying_animation()
-        #     self.fall()
+        if self.is_move and not self.killed_mario:
+            self.animation()
+            self.rotate()
+        if self.dead and not self.killed_mario:
+            self.dying_animation()
+            self.fall()
 
 
 class FakeBowser(Enemy):
