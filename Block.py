@@ -39,6 +39,10 @@ class Block(Sprite):
         self.x = float(self.rect.x)
         self.y = float(self.rect.y)
 
+        self.bump = False
+        self.counter = 0
+        self.y_original = self.pos[1]
+
     def update(self):
         self.rect.x = self.x
         self.rect.y = self.y
@@ -77,6 +81,9 @@ class Block(Sprite):
         elif self.broken:
             self.destroy()
 
+        if self.bump:
+            self.bumped()
+
         self.timer += 1
 
     def destroy(self):
@@ -93,9 +100,29 @@ class Block(Sprite):
 
     def bumped(self):
         # play animation of brick getting hit if small mario jumps into it
-        counter = 0
-        while counter < 5:
-            self.rect.y += 1
-            counter += 1
-        while counter > 0:
-            self.rect.y -= 1
+        # counter = 0
+        # while counter < 5:
+        #     self.rect.y += 1
+        #     counter += 1
+        # while counter > 0:
+        #     self.rect.y -= 1
+
+        # while counter < 10:
+        if self.counter < 10:
+            self.y -= 2
+        elif 5 < self.counter <= 20:
+            self.y += 2
+            if self.y > self.y_original:
+                self.bump = False
+                self.y = self.y_original
+        # self.rect.y = self.y
+        self.counter += 1
+
+        if self.counter > 20:
+            self.counter = 0
+
+        #     print(self.rect.y)
+        #     print(counter)
+
+
+
