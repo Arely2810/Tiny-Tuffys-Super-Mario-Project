@@ -235,9 +235,9 @@ def check_enemy_mario_collision(settings, scoreboard, enemies, mario):
                 settings.stomp.play()
                 if enemy.group_type == 1:
                     enemy.rect.y += 16
-                mario.last_y_position = mario.rect.y
+                # mario.last_y_position = mario.rect.y
                 mario.mario_bounce = True
-                mario.jump = False
+                # mario.jump = False
                 enemy.dead = True
                 enemy.is_move = False
                 scoreboard.enemy_killed('brown_guy')
