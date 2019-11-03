@@ -10,7 +10,7 @@ from pole import Pole
 from flag import Flag
 
 
-ef mario_move(mario, settings, screen, fireball):
+def mario_move(mario, settings, screen, fireball):
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
