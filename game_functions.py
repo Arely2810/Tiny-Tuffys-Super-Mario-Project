@@ -173,6 +173,7 @@ def check_collision(settings, scoreboard, enemies, mario, blocks, pipes):
     # check_mario_object_collision(mario, blocks)
     # check_mario_object_collision(mario, pipes)
     check_mario_block_collision(mario, blocks)
+    check_mario_block_collision(mario, pipes)
 
 
 # def check_mario_object_collision(mario, obstacles):
@@ -188,20 +189,45 @@ def check_collision(settings, scoreboard, enemies, mario, blocks, pipes):
 #                 mario.vel_x = 0
 
 
+# def check_mario_pipe_collision(mario, pipes):
+#     for pipe in pipes:
+#         collision = pygame.sprite.spritecollide(mario, pipes, False)
+#         if collision:
+#             if mario.rect.collidepoint(pipe.rect.topleft) or mario.rect.collidepoint(pipe.rect.midtop) or \
+#                 mario.rect.collidepoint(pipe.rect.topright):
+#                 mario.falling = False
+#             elif mario.rect.right >= pipe.rect.left and mario.rect.center[0] >= pipe.rect.left:
+#                 mario.moving_right = False
+#                 mario.sprint = False
+#                 mario.rect.left = pipe.rect.right
+#             elif mario.rect.left <= pipe.rect.right and pipe.rect.center[0] <= pipe.rect.right:  # and mario.rect.bottom >= pipe.rect.top:
+#                 mario.moving_left = False
+#                 mario.sprint = False
+#                 mario.rect.right = pipe.rect.left
+
+
 def check_mario_block_collision(mario, blocks):
     for block in blocks:
         collision = pygame.sprite.spritecollide(mario, blocks, False)
         if collision:
-            if mario.rect.collidepoint(block.rect.topleft) or \
+            if mario.falling or mario.rect.collidepoint(block.rect.left, block.rect.top + 10) or \
                     mario.rect.collidepoint(block.rect.midleft) or \
-                    mario.rect.collidepoint(block.rect.topright) or \
-                    mario.rect.collidepoint(block.rect.midright):
-                mario.vel_x = 0
+                    mario.rect.collidepoint(block.rect.left, block.rect.bottom - 10):
+                mario.moving_right = False
+                mario.sprint = False
+            elif mario.falling or mario.rect.collidepoint(block.rect.right, block.rect.top + 10) or \
+                    mario.rect.collidepoint(block.rect.midright) or \
+                    mario.rect.collidepoint(block.rect.right, block.rect.bottom - 10):
+                # mario.vel_x = 0
+                mario.moving_left = False
+                mario.sprint = False
+
             elif mario.rect.collidepoint(block.rect.bottomleft) or \
                     mario.rect.collidepoint(block.rect.midbottom) or \
                     mario.rect.collidepoint(block.rect.bottomright):
                 block.bump = True
                 mario.jump = False
+                mario.mario_bounce = False
                 mario.falling = True
             if block.rect.collidepoint(mario.rect.bottomleft) or \
                     block.rect.collidepoint(mario.rect.midbottom) or \
