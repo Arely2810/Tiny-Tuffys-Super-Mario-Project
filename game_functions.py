@@ -38,6 +38,10 @@ def mario_move(mario, settings, screen, fireball):
                     mario.jump = True
                     mario.go_down = False
                     mario.last_y_position = mario.rect.y
+
+                # if not mario.mario_bounce:
+                #     mario.last_y_position = mario.rect.y
+
                 if event.key == pygame.K_RIGHT:
                     mario.moving_left = False
                     mario.moving_right = True
@@ -228,18 +232,27 @@ def check_enemy_mario_collision(settings, scoreboard, enemies, mario):
         collision = pygame.sprite.spritecollide(mario, enemies, False)
         if collision:
             # checks if mario collides with any of the top 3 points of enemy
-            if mario.vel_y > 0 and (((mario.rect.right >= enemy.rect.left and mario.rect.center[0] >= enemy.rect.left)
-                                     or (mario.rect.left <= enemy.rect.right and mario.rect.center[
-                        0] <= enemy.rect.right))
-                                    and mario.rect.bottom >= enemy.rect.top):
+            if mario.falling and (mario.rect.collidepoint(enemy.rect.left + 3, enemy.rect.top) or
+                                  mario.rect.collidepoint(enemy.rect.midtop) or
+                                  mario.rect.collidepoint(enemy.rect.right - 3, enemy.rect.top)):
+                # (((mario.rect.right >= enemy.rect.left and mario.rect.center[0] >= enemy.rect.left)
+                #                or (mario.rect.left <= enemy.rect.right and mario.rect.center[0] <=
+                #                    enemy.rect.right)) and mario.rect.bottom >= enemy.rect.top):
                 settings.stomp.play()
                 if enemy.group_type == 1:
                     enemy.rect.y += 16
                 # mario.last_y_position = mario.rect.y
+
                 mario.mario_bounce = True
-                # mario.jump = False
+                mario.jump = False
+
+                # mario.falling = False
+
                 enemy.dead = True
-                enemy.is_move = False
+                # enemy.is_move = False
+                # enemy.killed_mario = False
+                mario.death = False
+
                 scoreboard.enemy_killed('brown_guy')
             # checks if goomba collides with mario's left top and right
             elif enemy.rect.collidepoint(mario.rect.topright) or enemy.rect.collidepoint(mario.rect.midright) or \
@@ -249,13 +262,13 @@ def check_enemy_mario_collision(settings, scoreboard, enemies, mario):
                 mario.death = True
                 for enemy_ in enemies:  # this loop stops all the enemies
                     enemy_.killed_mario = True
-            elif mario.vel_y < 0 and collision:  # and not mario.mario_bounce:
+            elif (mario.mario_bounce or mario.jump) and collision:  # and not mario.mario_bounce:
                 mario.death = True
                 enemy.killed_mario = True
-            # if enemy.enemy_rect.y > settings.screen_width:
-            #     enemies.remove(enemy)
-            # if enemy.stepped_on and enemy.count == 5:
-            #     enemies.remove(enemy)
+            if enemy.enemy_rect.y > settings.screen_width:
+                enemies.remove(enemy)
+            if enemy.stepped_on and enemy.count == 5:
+                enemies.remove(enemy)
 
 
 def scroll_eveything_left(settings, mario, enemies, blocks, pipes):
@@ -264,39 +277,51 @@ def scroll_eveything_left(settings, mario, enemies, blocks, pipes):
     # type 3 -> rotating sprites
     for enemy in enemies:
         if enemy.group_type == 1:
-            if mario.moving_right and mario.rect.x == settings.start_scrolling_pos_x:
-                if mario.sprint:
+            if (mario.moving_right or mario.sprint) and mario.rect.x == settings.start_scrolling_pos_x:
+                if mario.sprint and mario.moving_right:
                     enemy.enemy_rect.x -= mario.vel_x * 4
+                elif mario.sprint and not mario.moving_right:
+                    enemy.enemy_rect.x -= mario.vel_x * 3
                 elif not mario.sprint:
                     enemy.enemy_rect.x -= mario.vel_x
         elif enemy.group_type == 2:
-            if mario.moving_right and mario.rect.x == settings.start_scrolling_pos_x:
-                if mario.sprint:
+            if (mario.moving_right or mario.sprint) and mario.rect.x == settings.start_scrolling_pos_x:
+                if mario.sprint and mario.moving_right:
                     enemy.enemy_rect.x -= mario.vel_x * 4
                     enemy.path_left -= mario.vel_x * 4
                     enemy.path_right -= mario.vel_x * 4
+                elif mario.sprint and not mario.moving_right:
+                    enemy.enemy_rect.x -= mario.vel_x * 3
+                    enemy.path_left -= mario.vel_x * 3
+                    enemy.path_right -= mario.vel_x * 3
                 elif not mario.sprint:
                     enemy.enemy_rect.x -= mario.vel_x
                     enemy.path_left -= mario.vel_x
                     enemy.path_right -= mario.vel_x
         elif enemy.group_type == 3:
-            if mario.moving_right and mario.rect.x == settings.start_scrolling_pos_x:
-                if mario.sprint:
+            if (mario.moving_right or mario.sprint) and mario.rect.x == settings.start_scrolling_pos_x:
+                if mario.sprint and mario.moving_right:
                     enemy.center_rot_x -= mario.vel_x * 4
+                elif mario.sprint and not mario.moving_right:
+                    enemy.enemy_rect.x -= mario.vel_x * 3
                 elif not mario.sprint:
                     enemy.center_rot_x -= mario.vel_x
 
     for block in blocks:
-        if mario.moving_right and mario.rect.x == settings.start_scrolling_pos_x:
-            if mario.sprint:
+        if (mario.moving_right or mario.sprint) and mario.rect.x == settings.start_scrolling_pos_x:
+            if mario.sprint and mario.moving_right:
                 block.x -= mario.vel_x * 4
+            elif mario.sprint and not mario.moving_right:
+                block.x -= mario.vel_x * 3
             elif not mario.sprint:
                 block.x -= mario.vel_x
 
     for pipe in pipes:
-        if mario.moving_right and mario.rect.x == settings.start_scrolling_pos_x:
-            if mario.sprint:
+        if (mario.moving_right or mario.sprint) and mario.rect.x == settings.start_scrolling_pos_x:
+            if mario.sprint and mario.moving_right:
                 pipe.x -= mario.vel_x * 4
+            elif mario.sprint and not mario.moving_right:
+                pipe.x -= mario.vel_x * 3
             elif not mario.sprint:
                 pipe.x -= mario.vel_x
 
@@ -324,6 +349,7 @@ def create_pole(settings, screen, poles):
     print(pole.pos)
     poles.add(pole)
 
+
 # def create_entities(settings, screen, blocks, tubes, enemies):
 #     create_block(settings, screen, blocks)
 #     create_pipes(settings, screen, tubes)
@@ -336,3 +362,25 @@ def create_pole(settings, screen, poles):
 #     blocks.draw(screen)
 #     tubes.draw(screen)
 #     pass
+
+def reset_game(screen, settings, mario, enemies, blocks, pipes):
+    if mario.rect.y >= settings.screen_height:
+        mario.rect.x = 4
+        mario.rect.y = 385
+        settings.bg_x = 0
+        # for enemy in enemies:
+        #     enemies.remove(enemy)
+        # for block in blocks:
+        #     blocks.remove(block)
+        # for pipe in pipes:
+        #     pipes.remove(pipe)
+        enemies.empty()
+        blocks.empty()
+        pipes.empty()
+        settings.current_enemies = 0
+        settings.current_block = 0
+        settings.current_pipe = 0
+        create_block(settings, screen, blocks)
+        create_enemy(settings, screen, enemies)
+        create_pipe(settings, screen, pipes)
+        mario.death = False
