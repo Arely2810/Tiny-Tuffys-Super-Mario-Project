@@ -469,10 +469,12 @@ class Mario(Sprite):
                 if self.is_big and self.is_fire:
                     if self.rect.y < 379:
                         self.image = pygame.transform.scale(self.fire_flagpole[0], (self.rect.width, self.rect.height))
+                        self.blitme()
                         self.vel_y = 1
                         self.rect.y += self.vel_y
                     elif 379 <= self.rect.y < 383:
                         self.image = pygame.transform.scale(self.fire_flagpole[1], (self.rect.width, self.rect.height))
+                        self.blitme()
                         self.rect.x += 32
                         self.vel_y = 1
                         self.rect.y += self.vel_y
@@ -480,13 +482,20 @@ class Mario(Sprite):
                         self.rect.x += 64
                         self.rect.y = 385
                         self.flag = False
+                        self.image = self.fire_run_right_animation()
+                        self.blitme()
+                        self.rect.x += 40
+                        self.image = pygame.transform.scale(pygame.image.load('Cut-Sprites-For-Mario/Mario/Blank.png'),
+                                                            (self.rect.width, self.rect.height))
                 elif self.is_big and not self.is_fire:
                     if self.rect.y < 379:
                         self.image = pygame.transform.scale(self.big_flagpole[0], (self.rect.width, self.rect.height))
+                        self.blitme()
                         self.vel_y = 1
                         self.rect.y += self.vel_y
                     elif 379 <= self.rect.y < 383:
                         self.image = pygame.transform.scale(self.big_flagpole[1], (self.rect.width, self.rect.height))
+                        self.blitme()
                         self.rect.x += 32
                         self.vel_y = 1
                         self.rect.y += self.vel_y
@@ -494,13 +503,20 @@ class Mario(Sprite):
                         self.rect.x += 64
                         self.rect.y = 385
                         self.flag = False
+                        self.image = self.big_run_right_animation()
+                        self.blitme()
+                        self.rect.x += 40
+                        self.image = pygame.transform.scale(pygame.image.load('Cut-Sprites-For-Mario/Mario/Blank.png'), 
+                                                            (self.rect.width, self.rect.height))
                 elif not self.is_big and not self.is_fire:
                     if self.rect.y < 379:
                         self.image = pygame.transform.scale(self.mario_flagpole[0], (self.rect.width, self.rect.height))
+                        self.blitme()
                         self.vel_y = 1
                         self.rect.y += self.vel_y
                     elif 379 <= self.rect.y < 383:
                         self.image = pygame.transform.scale(self.mario_flagpole[1], (self.rect.width, self.rect.height))
+                        self.blitme()
                         self.rect.x += 32
                         self.vel_y = 1
                         self.rect.y += self.vel_y
@@ -508,6 +524,11 @@ class Mario(Sprite):
                         self.rect.x += 64
                         self.rect.y = 385
                         self.flag = False
+                        self.image = self.run_right_animation()
+                        self.blitme()
+                        self.rect.x += 40
+                        self.image = pygame.transform.scale(pygame.image.load('Cut-Sprites-For-Mario/Mario/Blank.png'),
+                                                            (self.rect.width, self.rect.height))
 
         else:
             self.dead()
