@@ -105,6 +105,7 @@ class Mario(Sprite):
         self.death = False
         self.sprint = False
         self.flag = False
+        self.mario_bounce = False
         self.last_y_position = 0
 
         self.rect = pygame.Rect(4, 385, 30, 30)
@@ -382,6 +383,26 @@ class Mario(Sprite):
                 if self.rect.y > 385:
                     self.falling = False
                     self.rect.y = 385
+            if self.mario_bounce:
+                if self.is_facing_right:
+                    if self.is_big and not self.is_fire:
+                        self.image = self.big_jump_right_animation()
+                    elif self.is_big and self.is_fire:
+                        self.image = self.fire_jump_right_animation()
+                    elif not self.is_big and not self.is_fire:
+                        self.image = self.jump_right_animation()
+                elif self.is_facing_left:
+                    if self.is_big and not self.is_fire:
+                        self.image = self.big_jump_left_animation()
+                    elif self.is_big and self.is_fire:
+                        self.image = self.fire_jump_left_animation()
+                    elif not self.is_big and not self.is_fire:
+                        self.image = self.jump_left_animation()
+                self.vel_y = -1
+                self.rect.y += self.vel_y
+                if abs(self.last_y_position - self.rect.y) > 15:
+                    self.mario_bounce = False
+                    self.falling = True
             if self.is_fire and self.throw_fire:
                 if self.is_facing_right:
                     self.image = self.shooting_fireballs_right()
