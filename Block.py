@@ -75,8 +75,10 @@ class Block(Sprite):
                 self.image = self.underground_hard_block_image
             if self.type == 7:
                 self.image = self.invisible_block_image
-            elif self.type == 8 or self.emptied:  # == True:
+            if self.type == 8:
                 self.image = self.empty_block_image[0]
+        elif self.emptied == True:
+            self.image = self.empty_block_image[0]
 
         elif self.broken:
             self.destroy()
