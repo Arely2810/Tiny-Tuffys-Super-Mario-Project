@@ -113,6 +113,8 @@ class Mario(Sprite):
         self.grounded = True
         self.colliding = False
         self.dropping = False
+        self.after_flag = False
+        self.ending = False
 
         self.rect = pygame.Rect(4, 385, 30, 30)
         self.screen_rect = screen.get_rect()
@@ -486,11 +488,6 @@ class Mario(Sprite):
                         self.rect.x += 64
                         self.rect.y = 385
                         self.flag = False
-                        self.image = self.fire_run_right_animation()
-                        self.blitme()
-                        self.rect.x += 40
-                        self.image = pygame.transform.scale(pygame.image.load('Cut-Sprites-For-Mario/Mario/Blank.png'),
-                                                            (self.rect.width, self.rect.height))
                 elif self.is_big and not self.is_fire:
                     if self.rect.y < 379:
                         self.image = pygame.transform.scale(self.big_flagpole[0], (self.rect.width, self.rect.height))
@@ -507,11 +504,6 @@ class Mario(Sprite):
                         self.rect.x += 64
                         self.rect.y = 385
                         self.flag = False
-                        self.image = self.big_run_right_animation()
-                        self.blitme()
-                        self.rect.x += 40
-                        self.image = pygame.transform.scale(pygame.image.load('Cut-Sprites-For-Mario/Mario/Blank.png'),
-                                                            (self.rect.width, self.rect.height))
                 elif not self.is_big and not self.is_fire:
                     if self.rect.y < 379:
                         self.image = pygame.transform.scale(self.mario_flagpole[0], (self.rect.width, self.rect.height))
@@ -528,11 +520,19 @@ class Mario(Sprite):
                         self.rect.x += 64
                         self.rect.y = 385
                         self.flag = False
-                        self.image = self.run_right_animation()
-                        self.blitme()
-                        self.rect.x += 40
-                        self.image = pygame.transform.scale(pygame.image.load('Cut-Sprites-For-Mario/Mario/Blank.png'),
-                                                            (self.rect.width, self.rect.height))
+            if self.after_flag:
+                if self.is_big and self.is_fire:
+                    self.image = self.fire_run_right_animation()
+                    self.rect.x += 40
+                elif self.is_big and not self.is_fire:
+                    self.image = self.big_run_right_animation()
+                    self.rect.x += 40
+                elif not self.is_big and not self.is_fire:
+                    self.image = self.run_right_animation()
+                    self.rect.x += 40
+            if self.ending:
+                self.image = pygame.transform.scale(pygame.image.load('Cut-Sprites-For-Mario/Mario/Blank.png'),
+                                                    (self.rect.width, self.rect.height))
 
             if not self.grounded and not self.colliding and not self.falling: # and self.dropping:
                 self.drop()
