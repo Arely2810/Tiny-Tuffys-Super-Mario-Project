@@ -45,7 +45,8 @@ class Settings:
                                 (4005, 383), (4095, 383), (4135, 383), (5550, 383), (5590, 383)]
         self.enemy_path1 = [0, 0, 0, 0, 0, 0, 0, 0, (0, 0), 0, 0, 0, 0, 0, 0, 0, 0]  # 0 or (0,0) = no path (x,y) = path
         self.enemy_species1 = [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]  # depends on what species enemy is
-        self.enemy_type1 = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]  # depends on the enemy subclass attribute
+        self.enemy_type1 = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+        # depends on the enemy subclass attribute
 
         # index variables
         self.current_enemies = 0
@@ -115,7 +116,6 @@ class Settings:
         self.ground_sizes = [ground_size1]
         self.flag_positions = [flag_position1]
         self.pole_positions = [pole_position1]
-
 
         self.mario_limit = 3
         self.fireball_width = 5
