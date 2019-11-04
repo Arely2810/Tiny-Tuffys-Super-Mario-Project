@@ -1,5 +1,6 @@
 import pygame
 import pygame.font
+import time
 
 
 class ScoreBoard:
@@ -16,6 +17,7 @@ class ScoreBoard:
         self.white = (255, 255, 255)
         self.font = pygame.font.SysFont(None, 25)
         self.center = (90, 50)
+        self.time1 = 400
 
         self.setup_score()
         self.setup_time()
@@ -50,9 +52,10 @@ class ScoreBoard:
         elif not died:
             self.lives = self.lives
 
-    def timer_countdown(self, mario_x):
-        while mario_x != 14036:
-            self.time = self.time - 1
+    def setup_timer(self):
+        if self.time1 != 0:
+            self.time1 = self.time1 - 1
+            time.sleep(1)
 
     def setup_score(self):
         score = self.score
