@@ -9,7 +9,6 @@ from mario import Mario
 import game_functions as gf
 from settings import Settings
 from scoreboard import ScoreBoard
-from pole import Pole
 
 
 pygame.init()
