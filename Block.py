@@ -77,7 +77,7 @@ class Block(Sprite):
                 self.image = self.invisible_block_image
             if self.type == 8:
                 self.image = self.empty_block_image[0]
-        elif self.emptied == True:
+        elif self.emptied:
             self.image = self.empty_block_image[0]
 
         elif self.broken:
@@ -125,6 +125,3 @@ class Block(Sprite):
 
         #     print(self.rect.y)
         #     print(counter)
-
-
-
