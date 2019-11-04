@@ -1,8 +1,6 @@
 import pygame
 from pygame.sprite import Sprite
 
-import game_functions as gf
-
 
 class Mario(Sprite):
     mario_idle_right = [pygame.image.load('Cut-Sprites-For-Mario/Mario/75.png')]
@@ -264,8 +262,8 @@ class Mario(Sprite):
         self.blitme()
         self.rect.y += self.settings.mario_speed
         # if self.rect.y >= self.settings.screen_height:
-            # self.rect.x = 4
-            # self.rect.y = 385
+        # self.rect.x = 4
+        # self.rect.y = 385
 
     def update(self):
         if self.count >= 30:
@@ -534,7 +532,7 @@ class Mario(Sprite):
                 self.image = pygame.transform.scale(pygame.image.load('Cut-Sprites-For-Mario/Mario/Blank.png'),
                                                     (self.rect.width, self.rect.height))
 
-            if not self.grounded and not self.colliding and not self.falling: # and self.dropping:
+            if not self.grounded and not self.colliding and not self.falling:  # and self.dropping:
                 self.drop()
                 # print("I AM DROPPING")
 
@@ -571,4 +569,4 @@ class Mario(Sprite):
         if self.rect.y < 385 and not self.mario_bounce and not self.jump and not self.grounded and not self.colliding:
             self.rect.y += self.vel_y * self.settings.mario_jump_speed
             # self.falling = True
-            print("dropping")
+            # print("dropping")
