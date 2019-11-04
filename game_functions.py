@@ -283,8 +283,8 @@ def check_enemy_mario_collision(settings, scoreboard, enemies, mario):
         if collision:
             # checks if mario collides with any of the top 3 points of enemy
             if (mario.falling or mario.dropping) and (mario.rect.collidepoint(enemy.rect.left + 3, enemy.rect.top) or
-                                  mario.rect.collidepoint(enemy.rect.midtop) or
-                                  mario.rect.collidepoint(enemy.rect.right - 3, enemy.rect.top)):
+                                                      mario.rect.collidepoint(enemy.rect.midtop) or
+                                                      mario.rect.collidepoint(enemy.rect.right - 3, enemy.rect.top)):
                 settings.stomp.play()
                 if enemy.group_type == 1:
                     enemy.rect.y += 16
@@ -402,7 +402,7 @@ def create_pole(settings, screen, poles):
     pole.x = pole.pos[0]
     pole.y = pole.pos[1]
 
-    print(pole.pos)
+    # print(pole.pos)
     poles.add(pole)
 
 
