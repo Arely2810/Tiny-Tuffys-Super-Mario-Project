@@ -25,6 +25,12 @@ class ScoreBoard:
 
         self.update_screen()
 
+        self.score_image, self.score_rect = self.setup_score()
+        self.time_image, self.time_rect = self.setup_time()
+        self.world_image, self.world_rect = self.setup_world()
+        self.coin_image, self.coin_rect = self.setup_coins()
+        self.lives_image, self.lives_rect = self.setup_lives()
+
     def enemy_killed(self, enemy_type):
         if enemy_type == 'turtle':
             self.score = self.score + 400
@@ -54,6 +60,7 @@ class ScoreBoard:
         self.score_image = self.font.render(score_str, True, self.white)
 
         self.score_rect = (10, 10)
+        return self.score_image, self.score_rect
 
     def setup_time(self):
         time = self.time
@@ -61,6 +68,7 @@ class ScoreBoard:
         self.time_image = self.font.render(time_str, True, self.white)
 
         self.time_rect = (110, 10)
+        return self.time_image, self.time_rect
 
     def setup_world(self):
         world = self.world
@@ -69,6 +77,7 @@ class ScoreBoard:
         self.world_image = self.font.render(world_str, True, self.white)
 
         self.world_rect = (220, 10)
+        return self.world_image, self.world_rect
 
     def setup_coins(self):
         coins = self.coins
@@ -76,6 +85,7 @@ class ScoreBoard:
         self.coin_image = self.font.render(coins_str, True, self.white)
 
         self.coin_rect = (330, 10)
+        return self.coin_image, self.coin_rect
 
     def setup_lives(self):
         lives = self.lives
@@ -83,6 +93,7 @@ class ScoreBoard:
         self.lives_image = self.font.render(lives_str, True, self.white)
 
         self.lives_rect = (425, 10)
+        return self.lives_image, self.lives_rect
 
     def update_screen(self):
         self.screen.blit(self.score_image, self.score_rect)
