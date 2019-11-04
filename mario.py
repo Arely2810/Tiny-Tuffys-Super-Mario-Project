@@ -110,6 +110,10 @@ class Mario(Sprite):
         self.mario_bounce = False
         self.last_y_position = 0
 
+        self.grounded = True
+        self.colliding = False
+        self.dropping = False
+
         self.rect = pygame.Rect(4, 385, 30, 30)
         self.screen_rect = screen.get_rect()
         self.rect.x = 4
@@ -506,7 +510,7 @@ class Mario(Sprite):
                         self.image = self.big_run_right_animation()
                         self.blitme()
                         self.rect.x += 40
-                        self.image = pygame.transform.scale(pygame.image.load('Cut-Sprites-For-Mario/Mario/Blank.png'), 
+                        self.image = pygame.transform.scale(pygame.image.load('Cut-Sprites-For-Mario/Mario/Blank.png'),
                                                             (self.rect.width, self.rect.height))
                 elif not self.is_big and not self.is_fire:
                     if self.rect.y < 379:
@@ -530,6 +534,10 @@ class Mario(Sprite):
                         self.image = pygame.transform.scale(pygame.image.load('Cut-Sprites-For-Mario/Mario/Blank.png'),
                                                             (self.rect.width, self.rect.height))
 
+            if not self.grounded and not self.colliding and not self.falling: # and self.dropping:
+                self.drop()
+                # print("I AM DROPPING")
+
         else:
             self.dead()
         self.blitme()
@@ -537,3 +545,30 @@ class Mario(Sprite):
     def blitme(self):
         self.screen.blit(self.image, self.rect)
 
+    def fall(self):
+        if self.falling:
+            if self.is_facing_right:
+                if self.is_big and not self.is_fire:
+                    self.image = self.big_jump_right_animation()
+                elif self.is_big and self.is_fire:
+                    self.image = self.fire_jump_right_animation()
+                elif not self.is_big and not self.is_fire:
+                    self.image = self.jump_right_animation()
+            elif self.is_facing_left:
+                if self.is_big and not self.is_fire:
+                    self.image = self.big_jump_left_animation()
+                elif self.is_big and self.is_fire:
+                    self.image = self.fire_jump_left_animation()
+                elif not self.is_big and not self.is_fire:
+                    self.image = self.jump_left_animation()
+            self.vel_y = 1
+            self.rect.y += self.vel_y * self.settings.mario_jump_speed
+            if self.rect.y > 385:
+                self.falling = False
+                self.rect.y = 385
+
+    def drop(self):
+        if self.rect.y < 385 and not self.mario_bounce and not self.jump and not self.grounded and not self.colliding:
+            self.rect.y += self.vel_y * self.settings.mario_jump_speed
+            # self.falling = True
+            print("dropping")
