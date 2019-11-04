@@ -8,7 +8,7 @@ class Ground(Sprite):
         self.screen = screen
         self.pos = pos
         self.image = pygame.Surface(size, pygame.SRCALPHA)
-        self.image = self.image.convert_alpha(screen)  # ?
+        self.image = self.image.convert_alpha(screen)
         self.rect = self.image.get_rect()
 
         self.rect.x = self.pos[0]
