@@ -52,10 +52,6 @@ class ScoreBoard:
         elif not died:
             self.lives = self.lives
 
-    def setup_timer(self):
-        if self.time1 != 0:
-            self.time1 = self.time1 - 1
-            time.sleep(1)
 
     def setup_score(self):
         score = self.score
@@ -66,8 +62,11 @@ class ScoreBoard:
         return self.score_image, self.score_rect
 
     def setup_time(self):
-        time = self.time
-        time_str = "Time: {}".format(time)
+        if self.time1 != 0:
+            self.time1 = self.time1 - 1
+            time.sleep(1)
+        time1 = self.time1
+        time_str = "Time: {}".format(time1)
         self.time_image = self.font.render(time_str, True, self.white)
 
         self.time_rect = (110, 10)
