@@ -36,7 +36,7 @@ class Fireball(Sprite):
                       pygame.image.load('Cut-Sprites-For-Mario/Mario/5.png')]
     fire_crouch_left = [pygame.image.load('Cut-Sprites-For-Mario/Mario/31.png')]
     fire_throw_left = [pygame.image.load('Cut-Sprites-For-Mario/Mario/27.png')]
-    
+
     def __init__(self, settings, screen, mario):
         super(Fireball, self).__init__()
         self.screen = screen
@@ -114,6 +114,6 @@ class Fireball(Sprite):
                 self.velocity[1] = -self.velocity[1]
         self.blitme()
     # ill finish this after i have the images and code ready
-    
+
     def blitme(self):
         self.screen.blit(self.image, self.rect)
